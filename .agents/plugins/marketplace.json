@@ -7,6 +7,12 @@
       "source": { "source": "local", "path": "./plugins/skill-workshop" },
       "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
       "category": "Productivity"
+    },
+    {
+      "name": "requirement-clarify",
+      "source": { "source": "local", "path": "./plugins/requirement-clarify" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
     }
   ]
 }

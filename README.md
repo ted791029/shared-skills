@@ -6,7 +6,8 @@
 
 | Plugin | 用途 | 需要另外安裝 |
 | --- | --- | --- |
-| `skill-workshop` | 建立與優化 skill 的工作流（9 個 skill） | `requirement-clarify` plugin（在另一個 repo）、`uv` |
+| `skill-workshop` | 建立與優化 skill 的工作流（9 個 skill） | `requirement-clarify` plugin、`uv` |
+| `requirement-clarify` | 以選項題訪談使用者，釐清需求缺口（1 個 skill） | 無 |
 
 沒裝 `requirement-clarify` 時，只有 `artifact-to-skill-engineering` 的客製化步驟會停下來提示安裝，其他 skill 不受影響。
 
@@ -37,6 +38,7 @@
 ```bash
 claude plugin marketplace add <repo>
 claude plugin install skill-workshop@shared-skills
+claude plugin install requirement-clarify@shared-skills
 ```
 
 更新後要重新啟動 Claude Code：
@@ -44,14 +46,15 @@ claude plugin install skill-workshop@shared-skills
 ```bash
 claude plugin marketplace update shared-skills
 claude plugin update skill-workshop@shared-skills
+claude plugin update requirement-clarify@shared-skills
 ```
 
-呼叫範例：`/skill-workshop:skill-engineering`
+呼叫範例：`/skill-workshop:skill-engineering`、`/requirement-clarify:clarify`
 
 ### Cursor（未實測）
 
 - 團隊：在 Dashboard 的 Plugins & MCPs 進入 Team Marketplaces，以 Import from Repo 匯入本 repo。
-- 個人：把 `plugins/skill-workshop` 複製到 `~/.cursor/plugins/local/skill-workshop`，再執行 Developer: Reload Window。
+- 個人：把要用的 `plugins/<plugin>` 複製到 `~/.cursor/plugins/local/<plugin>`，再執行 Developer: Reload Window。
 
 ### Codex（未實測）
 
@@ -75,5 +78,7 @@ codex plugin marketplace add <repo>
 ```bash
 claude plugin validate .
 claude plugin validate plugins/skill-workshop
+claude plugin validate plugins/requirement-clarify
 uv run plugins/skill-workshop/skills/skill-engineering/scripts/skill_graph.py plugins/skill-workshop/skills --issues-only
+uv run plugins/skill-workshop/skills/skill-engineering/scripts/skill_graph.py plugins/requirement-clarify/skills --issues-only
 ```

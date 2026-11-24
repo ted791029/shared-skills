@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "requirement-clarify",
+  "description": "以選項題訪談使用者，釐清需求缺口",
+  "author": { "name": "Ted" }
+}

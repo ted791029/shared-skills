@@ -7,6 +7,11 @@
       "name": "skill-workshop",
       "source": "./plugins/skill-workshop",
       "description": "建立與優化 skill 的工作流"
+    },
+    {
+      "name": "requirement-clarify",
+      "source": "./plugins/requirement-clarify",
+      "description": "以選項題訪談使用者，釐清需求缺口"
     }
   ]
 }
