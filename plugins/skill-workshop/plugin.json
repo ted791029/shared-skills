@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "skill-workshop",
+  "description": "建立與優化 skill 的工作流",
+  "author": { "name": "Ted" }
+}

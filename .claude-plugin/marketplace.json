@@ -1,0 +1,12 @@
+{
+  "name": "shared-skills",
+  "owner": { "name": "Ted" },
+  "description": "共用 skill",
+  "plugins": [
+    {
+      "name": "skill-workshop",
+      "source": "./plugins/skill-workshop",
+      "description": "建立與優化 skill 的工作流"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "name": "shared-skills",
+  "interface": { "displayName": "共用 skill" },
+  "plugins": [
+    {
+      "name": "skill-workshop",
+      "source": { "source": "local", "path": "./plugins/skill-workshop" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}
