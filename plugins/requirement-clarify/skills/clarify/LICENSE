@@ -1,10 +1,4 @@
-# clarify
-
-本 skill 改寫自 [GitHub Spec Kit](https://github.com/github/spec-kit) 的 `clarify` 指令，依其 MIT License 保留以下版權聲明與授權全文。
-
-本 README 僅供授權與來源說明，不屬於 skill 的執行內容。
-
----
+本 skill 改寫自 GitHub Spec Kit（https://github.com/github/spec-kit）的 clarify 指令，以下為其授權全文。
 
 MIT License
 
