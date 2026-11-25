@@ -14,7 +14,7 @@ description: 使用者想以一份或多份 Artifact 範例為目標建立新 sk
 
 ### Phase 2 --- 客製化範例
 
-1. DELEGATE 使用 requirement-clarify plugin 的 clarify skill 釐清使用者對每份範例的客製化需求，無法使用時不得自行代替，停止並請使用者安裝 requirement-clarify。
+1. DELEGATE 使用 clarify skill（可由 requirement-clarify plugin 提供，或為與本 skill 資料夾同層的 `clarify` 資料夾）釐清使用者對每份範例的客製化需求，兩者都沒有時不得自行代替，停止並請使用者安裝 requirement-clarify plugin，agent 不支援 plugin 時改為把 `clarify` 資料夾複製到同層。
 2. DELEGATE 依 [skill-form-template](../skill-form-template/SKILL.md) 依釐清結果修改每份對應的範例。
 3. ASK 請使用者一次確認所有範例是否滿意，有不滿意的範例時針對這些範例回到 Step 1。
 

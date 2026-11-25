@@ -9,7 +9,7 @@
 | `skill-workshop` | 建立與優化 skill 的工作流（9 個 skill） | `requirement-clarify` plugin、`uv` |
 | `requirement-clarify` | 以選項題訪談使用者，釐清需求缺口（1 個 skill） | 無 |
 
-沒裝 `requirement-clarify` 時，只有 `artifact-to-skill-engineering` 的客製化步驟會停下來提示安裝，其他 skill 不受影響。
+沒有 `clarify`（沒裝 `requirement-clarify`，同層也沒有 `clarify` 資料夾）時，只有 `artifact-to-skill-engineering` 的客製化步驟會停下來提示取得方式，其他 skill 不受影響。
 
 ### 跨 plugin 呼叫
 
@@ -63,6 +63,22 @@ codex plugin marketplace add <repo>
 ```
 
 接著在 Codex 輸入 `/plugins` 安裝。更新時執行 `codex plugin marketplace upgrade`。
+
+### 不支援 plugin 的 agent
+
+把 `plugins/*/skills/` 底下的 skill 資料夾全部複製到該 agent 的 skill 目錄，並放在**同一層**：
+
+```text
+<skill 目錄>/
+├── artifact-to-skill-engineering/
+├── clarify/
+├── skill-derive-rule/
+└── ……
+```
+
+- 只有 `clarify` 與 4 個 `skill-form-*` 可以單獨複製；其他 skill 會連到同層的 skill，缺少時連結失效。
+- `clarify` 要用本 repo 這份。設定了 `disable-model-invocation: true` 的版本在 Claude Code 無法被其他 skill 呼叫。
+- 不要同時安裝 plugin 又放複製版；複製版不會跟著更新，更新時要重新複製。
 
 ## 維護規則
 

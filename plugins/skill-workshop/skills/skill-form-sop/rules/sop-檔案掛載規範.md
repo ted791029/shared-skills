@@ -89,20 +89,21 @@ templates/需求規格書.example.md    H1：# 會員登入 需求規格書
 
 **強度：MUST**
 
-委派的 skill 位於其他 plugin 時，不得使用連結，格式固定為 `DELEGATE 使用 <plugin 名稱> plugin 的 <skill 名稱> skill <具體行為>，無法使用時不得自行代替，停止並請使用者安裝 <plugin 名稱>。`。各 plugin 分開安裝，相對路徑到不了其他 plugin。以下 Example 中，`clarify` 屬於 requirement-clarify plugin，呼叫者屬於 skill-workshop plugin。
+委派的 skill 位於其他 plugin 時，不得使用連結，格式固定為 ``DELEGATE 使用 <skill 名稱> skill（可由 <plugin 名稱> plugin 提供，或為與本 skill 資料夾同層的 `<skill 名稱>` 資料夾）<具體行為>，兩者都沒有時不得自行代替，停止並請使用者安裝 <plugin 名稱> plugin，agent 不支援 plugin 時改為把 `<skill 名稱>` 資料夾複製到同層。``。各 plugin 分開安裝，相對路徑到不了其他 plugin；skill 也可能不經 plugin、直接複製到不支援 plugin 的 agent，因此不得把被委派的 skill 限定為 plugin 版本。以下 Example 中，`clarify` 屬於 requirement-clarify plugin，呼叫者屬於 skill-workshop plugin。
 
 ### Good Example
 
-這個範例寫出 plugin 與 skill 名稱，並寫出無法使用時的處理。
+這個範例以 skill 名稱委派，寫出 plugin 與同層資料夾兩種來源，並寫出兩者都沒有時的處理。
 
 ```markdown
-1. DELEGATE 使用 requirement-clarify plugin 的 clarify skill 釐清客製化需求，無法使用時不得自行代替，停止並請使用者安裝 requirement-clarify。
+1. DELEGATE 使用 clarify skill（可由 requirement-clarify plugin 提供，或為與本 skill 資料夾同層的 `clarify` 資料夾）釐清客製化需求，兩者都沒有時不得自行代替，停止並請使用者安裝 requirement-clarify plugin，agent 不支援 plugin 時改為把 `clarify` 資料夾複製到同層。
 ```
 
 ### Bad Example
 
-這個範例以相對路徑連到其他 plugin 的 skill，安裝後該路徑不存在，agent 讀不到 clarify 的 SOP。
+這個範例的第 1 句以相對路徑連到其他 plugin 的 skill，安裝後該路徑不存在，agent 讀不到 clarify 的 SOP；第 2 句把 clarify 限定為 plugin 版本，skill 複製到沒有 plugin 的環境時，agent 即使看到同層的 clarify 也會拒絕使用而停止。
 
 ```markdown
 1. DELEGATE 依 [clarify](../clarify/SKILL.md) 釐清客製化需求。
+2. DELEGATE 使用 requirement-clarify plugin 的 clarify skill 釐清客製化需求，無法使用時不得自行代替，停止並請使用者安裝 requirement-clarify。
 ```
