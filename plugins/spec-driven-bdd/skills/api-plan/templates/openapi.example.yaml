@@ -1,0 +1,50 @@
+openapi: 3.1.0
+info:
+  title: 照片相簿整理器 API
+  version: 1.0.0
+  description: 匯入、相簿列表與排序、相簿內照片瀏覽與刪除。
+servers:
+  - url: http://127.0.0.1:3000
+    description: 本機後端
+tags:
+  - name: 匯入
+  - name: 相簿
+  - name: 照片
+paths:
+  /api/photos:
+    $ref: paths/匯入/api_photos.yaml
+  /api/albums:
+    $ref: paths/相簿/api_albums.yaml
+  /api/albums/{albumId}/position:
+    $ref: paths/相簿/api_albums_{albumId}_position.yaml
+  /api/albums/{albumId}/photos:
+    $ref: paths/照片/api_albums_{albumId}_photos.yaml
+  /api/photos/{photoId}:
+    $ref: paths/照片/api_photos_{photoId}.yaml
+  /api/photos/{photoId}/original:
+    $ref: paths/照片/api_photos_{photoId}_original.yaml
+  /api/photos/{photoId}/thumbnail:
+    $ref: paths/照片/api_photos_{photoId}_thumbnail.yaml
+components:
+  parameters:
+    albumId:
+      $ref: components/parameters/albumId.yaml
+    photoId:
+      $ref: components/parameters/photoId.yaml
+  schemas:
+    Album:
+      $ref: components/schemas/Album.yaml
+    AlbumList:
+      $ref: components/schemas/AlbumList.yaml
+    Error:
+      $ref: components/schemas/Error.yaml
+    ImportCreated:
+      $ref: components/schemas/ImportCreated.yaml
+    ImportDuplicate:
+      $ref: components/schemas/ImportDuplicate.yaml
+    Photo:
+      $ref: components/schemas/Photo.yaml
+    PhotoDeleted:
+      $ref: components/schemas/PhotoDeleted.yaml
+    PhotoList:
+      $ref: components/schemas/PhotoList.yaml

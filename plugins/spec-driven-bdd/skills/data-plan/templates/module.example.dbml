@@ -1,0 +1,22 @@
+use {
+  table albums
+} from './相簿'
+
+Table photos {
+  id char(36) [pk, note: '照片識別']
+  album_id char(36) [not null, note: '所屬相簿']
+  content_hash char(64) [not null, note: '檔案內容 SHA-256，用於去重']
+  taken_at datetime [not null, note: '拍攝當地時間，無時區']
+  date_estimated tinyint [not null, default: 0, note: '1 表示日期為推估']
+  has_thumbnail tinyint [not null, default: 0, note: '1 表示已有縮圖檔']
+  created_at datetime [not null, default: `CURRENT_TIMESTAMP`, note: '匯入完成時間']
+
+  indexes {
+    content_hash [unique, name: 'uk_photos_content_hash']
+    (album_id, taken_at, id) [name: 'ix_photos_album_taken', note: '供相簿內游標分頁']
+  }
+
+  Note: '保存每一張已匯入照片的中繼資料；檔案本體不存放於此。'
+}
+
+Ref fk_photos_album_id: photos.album_id > albums.id [delete: cascade]

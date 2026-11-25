@@ -1,0 +1,5 @@
+{
+  "name": "spec-driven-bdd",
+  "description": "以規格驅動（SDD）規劃、以 BDD 實作，從功能規格到通過測試的開發工作流",
+  "author": { "name": "Ted" }
+}

@@ -1,0 +1,16 @@
+type: object
+description: {{schema_description}}
+required:
+  # 重複開始：每個必填的屬性一項
+  - {{required_property_name}}
+  # 重複結束
+properties:
+  # 重複開始：每個屬性一段
+  {{property_name}}:
+    type: {{property_type}}
+    description: {{property_description}}
+  # 重複結束
+  # 重複開始：每個引用其他 schema 的屬性一段
+  {{ref_property_name}}:
+    $ref: ./{{referenced_schema_name}}.yaml
+  # 重複結束

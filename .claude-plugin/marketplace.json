@@ -12,6 +12,11 @@
       "name": "requirement-clarify",
       "source": "./plugins/requirement-clarify",
       "description": "以選項題訪談使用者，釐清需求缺口"
+    },
+    {
+      "name": "spec-driven-bdd",
+      "source": "./plugins/spec-driven-bdd",
+      "description": "以規格驅動（SDD）規劃、以 BDD 實作，從功能規格到通過測試的開發工作流"
     }
   ]
 }

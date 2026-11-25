@@ -1,0 +1,17 @@
+Project {{project_name}} {
+  Note: '''
+    # 資料模型
+
+    {{model_overview}}
+
+    ## 交易邊界
+
+    | 交易 | 範圍 | 失敗處理 |
+    |---|---|---|
+    | {{transaction_name}} | {{transaction_scope}} | {{failure_handling}} |
+  '''
+}
+
+// 重複開始：每個模組檔一行
+reuse * from './{{module_name}}'
+// 重複結束

@@ -1,0 +1,44 @@
+# 重複開始：這個路徑的每個方法一段
+{{http_method}}:
+  tags:
+    - {{module_name}}
+  summary: {{operation_summary}}
+  operationId: {{operation_id}}
+  description: {{operation_description}}
+  x-inner-needs:
+    data:
+      # 重複開始：每個讀寫的資料一項
+      - name: {{data_name}}
+        access: {{data_access}}
+      # 重複結束
+    files:
+      # 重複開始：每個讀寫的儲存區一項
+      - name: {{file_area_name}}
+        access: {{file_access}}
+      # 重複結束
+  parameters:
+    # 重複開始：每個共用的參數一項
+    - $ref: ../../components/parameters/{{shared_parameter_name}}.yaml
+    # 重複結束
+    # 重複開始：每個只有這個操作使用的參數一項
+    - name: {{parameter_name}}
+      in: {{parameter_location}}
+      schema:
+        type: {{parameter_type}}
+    # 重複結束
+  requestBody:
+    required: {{request_body_required}}
+    content:
+      {{request_media_type}}:
+        schema:
+          {{request_schema}}
+  responses:
+    # 重複開始：每個回應狀態碼一段
+    '{{status_code}}':
+      description: {{response_description}}
+      content:
+        {{response_media_type}}:
+          schema:
+            {{response_schema}}
+    # 重複結束
+# 重複結束

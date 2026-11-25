@@ -1,0 +1,443 @@
+{
+  "說明": "相依表：產物（以節為單位）→ 直接依據它的擁有者。plan_trace.py 依 owners 的輸入計算每個擁有者的輸入摘要並判定待補跑；artifacts 寫明每個產物的節、寫入者與事實的家，由 plan_trace.py deps 輸出。路徑的 plan: 相對於 plan 資料夾，truth: 相對於 specs/truth/。",
+  "artifacts": [
+    {
+      "path": "plan:spec.md",
+      "sections": [
+        {
+          "name": "使用者故事、FR、NFR、SC、邊界情況、關鍵實體、假設、受影響的既有功能",
+          "writers": "specify 建立；plan 進行中只由 clarify-over-specs（需求變更、保留並取代）與 spec-by-example（驗收澄清的答案）修改",
+          "home": "需求的內容、數值與規則（例如技能每局次數、字數上限、倒數秒數）"
+        },
+        {
+          "name": "釐清紀錄",
+          "writers": "每個場次屬於舉辦它的 skill（specify、clarify-over-specs、spec-by-example），只新增自己的場次",
+          "home": "問答過程；純過程紀錄，不是任何擁有者的輸入"
+        }
+      ]
+    },
+    {
+      "path": "plan:features/acceptance/*.feature",
+      "sections": [
+        {
+          "name": "未標 @開發發現 的 AC、Rule 標頭與 Background",
+          "writers": "spec-by-example",
+          "home": "PM 核准的驗收旅程、驗收用的範例值與起點預設值（# 預設值）"
+        },
+        {
+          "name": "標 @開發發現 的 AC",
+          "writers": "dev-finding",
+          "home": "開發中發現、PM 看得到的行為"
+        }
+      ]
+    },
+    {
+      "path": "plan:research.md",
+      "sections": [
+        {
+          "name": "每個 R-xx",
+          "writers": "technical-research",
+          "home": "本 plan 的研究決策、理由與替代方案"
+        }
+      ]
+    },
+    {
+      "path": "truth:techstack.md",
+      "sections": [
+        {
+          "name": "每個技術列",
+          "writers": "technical-research",
+          "home": "目前採用的技術、套件版本與模組；不重述 API 路徑、資料表、元件名與遷移版本"
+        }
+      ]
+    },
+    {
+      "path": "plan:plan.md",
+      "sections": [
+        {
+          "name": "原始碼段（專案結構 ＞ 原始碼）",
+          "writers": "system-analysis",
+          "home": "本 plan 的原始碼位置設計"
+        },
+        {
+          "name": "介面盤點的每一列、每個分析 Wave",
+          "writers": "system-analysis",
+          "home": "介面清單、異動、依據需求、Wave 與相依"
+        }
+      ]
+    },
+    {
+      "path": "plan:wave-report.md",
+      "sections": [
+        {
+          "name": "整份",
+          "writers": "system-analysis",
+          "home": "各端點 Planner 的執行結果與憲法衝突"
+        }
+      ]
+    },
+    {
+      "path": "plan:ui/ui-contract.md、plan:ui/prototype/",
+      "sections": [
+        {
+          "name": "每個 UI 介面",
+          "writers": "ui-ux-plan",
+          "home": "畫面的操作、狀態、文案（含錯誤碼對應的畫面訊息）、定位（testid）與無障礙"
+        }
+      ]
+    },
+    {
+      "path": "truth:contracts/",
+      "sections": [
+        {
+          "name": "每個路徑檔與 schema 檔",
+          "writers": "api-plan",
+          "home": "API 路徑、請求、回應、錯誤碼（code）與伺服器回傳的錯誤訊息範例、推播事件；畫面上顯示給使用者的文案以 UI 契約為準"
+        }
+      ]
+    },
+    {
+      "path": "truth:data/、plan:data-migration.md",
+      "sections": [
+        {
+          "name": "每個模組檔；遷移步驟",
+          "writers": "data-plan",
+          "home": "資料表、欄位、索引、關聯與約束；本 plan 的遷移步驟"
+        }
+      ]
+    },
+    {
+      "path": "truth:features/<端點>/*.feature",
+      "sections": [
+        {
+          "name": "每條 Rule、Background、Feature 標頭",
+          "writers": "dsl-refine",
+          "home": "各端點的測試案例與起點的預設值（# 預設值）"
+        }
+      ]
+    },
+    {
+      "path": "truth:features/<端點>/dsl.md",
+      "sections": [
+        {
+          "name": "每個句型列",
+          "writers": "dsl-refine",
+          "home": "句型、參數、測試撰寫語意與測試的等待上限；不重述需求的數值、規則與 UI 契約的文案"
+        }
+      ]
+    },
+    {
+      "path": "truth:features/用語表.md",
+      "sections": [
+        {
+          "name": "每一節",
+          "writers": "dsl-refine",
+          "home": "端點、模組、技術說法對照、跨端點共用的參數合法值、共用句子與同名 Rule"
+        }
+      ]
+    },
+    {
+      "path": "plan:features/涵蓋表.md",
+      "sections": [
+        {
+          "name": "每一節",
+          "writers": "dsl-refine",
+          "home": "AC 與需求對 Rule 的涵蓋"
+        }
+      ]
+    },
+    {
+      "path": "plan:truth-changes.md",
+      "sections": [
+        {
+          "name": "每個 truth owner 一節",
+          "writers": "該節名稱的 owner（plan-package open 建立空表格）",
+          "home": "本 plan 對 truth 的異動與原因"
+        }
+      ]
+    },
+    {
+      "path": "plan:技術項.md",
+      "sections": [
+        {
+          "name": "每一行",
+          "writers": "dev-finding",
+          "home": "使用者看不到的技術問題與修正的擁有者（修正：<擁有者>）"
+        }
+      ]
+    },
+    {
+      "path": "plan:tasks.md",
+      "sections": [
+        {
+          "name": "Phase 與任務",
+          "writers": "task",
+          "home": "實作任務與範疇"
+        },
+        {
+          "name": "任務的勾選",
+          "writers": "implement",
+          "home": "任務的完成狀態"
+        }
+      ]
+    },
+    {
+      "path": "backend/、frontend/ 等程式",
+      "sections": [
+        {
+          "name": "整份",
+          "writers": "implement（經 bdd）",
+          "home": "只由程式決定的事實：元件名、檔名、遷移檔名；truth 不重述"
+        }
+      ]
+    },
+    {
+      "path": "repo:.claude/constitution/",
+      "sections": [
+        {
+          "name": "每個產出物的條款檔與共通條款",
+          "writers": "constitution",
+          "home": "約束各產出物的最高規則；修訂後套用它的擁有者成為待補跑、各自整份核對一次"
+        }
+      ]
+    }
+  ],
+  "owners": [
+    {
+      "name": "clarify-over-specs",
+      "order": 10,
+      "inputs": [
+        "tech-items:self",
+        "constitution:specify,clarify-over-specs"
+      ],
+      "outputs": [
+        "plan:spec.md"
+      ],
+      "via": "/clarify-over-specs"
+    },
+    {
+      "name": "spec-by-example",
+      "order": 20,
+      "inputs": [
+        "spec.requirements",
+        "tech-items:self",
+        "constitution:spec-by-example,specify"
+      ],
+      "outputs": [
+        "plan:features/acceptance/",
+        "plan:spec.md"
+      ],
+      "via": "/spec-by-example"
+    },
+    {
+      "name": "technical-research",
+      "order": 30,
+      "inputs": [
+        "spec.requirements",
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:technical-research"
+      ],
+      "outputs": [
+        "plan:research.md",
+        "truth:techstack.md"
+      ],
+      "via": "/technical-research"
+    },
+    {
+      "name": "system-analysis",
+      "order": 40,
+      "inputs": [
+        "spec.requirements",
+        "acceptance",
+        "research",
+        "techstack",
+        "truth-changes:technical-research",
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:system-analysis"
+      ],
+      "outputs": [
+        "plan:plan.md",
+        "plan:wave-report.md"
+      ],
+      "via": "/system-analysis 的依差異入口"
+    },
+    {
+      "name": "ui-ux-plan",
+      "order": 50,
+      "prefix": "UI",
+      "scheduled": [
+        "plan.prefix",
+        "spec.cited",
+        "acceptance.cited",
+        "techstack"
+      ],
+      "unscheduled": [],
+      "always": [
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:self"
+      ],
+      "outputs": [
+        "plan:ui/"
+      ],
+      "via": "/system-analysis 的依差異入口只重跑這個端點，或直接執行 /ui-ux-plan"
+    },
+    {
+      "name": "api-plan",
+      "order": 60,
+      "prefix": "API",
+      "scheduled": [
+        "plan.prefix",
+        "spec.cited",
+        "acceptance.cited",
+        "techstack",
+        "ui-contract"
+      ],
+      "unscheduled": [],
+      "always": [
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:self"
+      ],
+      "outputs": [
+        "truth:contracts/"
+      ],
+      "via": "/system-analysis 的依差異入口只重跑這個端點，或直接執行 /api-plan"
+    },
+    {
+      "name": "data-plan",
+      "order": 70,
+      "prefix": "DB",
+      "scheduled": [
+        "plan.prefix",
+        "spec.cited",
+        "techstack",
+        "contracts",
+        "truth-changes:api-plan"
+      ],
+      "unscheduled": [
+        "contracts"
+      ],
+      "always": [
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:self"
+      ],
+      "outputs": [
+        "truth:data/",
+        "plan:data-migration.md"
+      ],
+      "via": "/system-analysis 的依差異入口只重跑這個端點，或直接執行 /data-plan"
+    },
+    {
+      "name": "storage-plan",
+      "order": 75,
+      "prefix": "FS",
+      "scheduled": [
+        "plan.prefix",
+        "spec.cited",
+        "techstack",
+        "contracts",
+        "truth-changes:api-plan"
+      ],
+      "unscheduled": [
+        "contracts"
+      ],
+      "always": [
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:self"
+      ],
+      "outputs": [],
+      "via": "/system-analysis 的依差異入口只重跑這個端點，或直接執行 /storage-plan"
+    },
+    {
+      "name": "*",
+      "order": 79,
+      "prefix": "*",
+      "scheduled": [
+        "plan.prefix",
+        "spec.cited",
+        "techstack",
+        "contracts"
+      ],
+      "unscheduled": [
+        "contracts"
+      ],
+      "always": [
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:self"
+      ],
+      "outputs": [],
+      "via": "/system-analysis 的依差異入口只重跑這個端點"
+    },
+    {
+      "name": "dsl-refine",
+      "order": 80,
+      "inputs": [
+        "acceptance",
+        "spec.requirements",
+        "plan.interfaces",
+        "wave-report",
+        "ui-contract",
+        "contracts",
+        "data",
+        "techstack",
+        "truth-changes:technical-research",
+        "truth-changes:*-plan",
+        "tech-items:self",
+        "constitution:dsl-refine"
+      ],
+      "outputs": [
+        "truth:features/",
+        "plan:features/涵蓋表.md"
+      ],
+      "via": "/dsl-refine"
+    },
+    {
+      "name": "task",
+      "order": 90,
+      "inputs": [
+        "spec.requirements",
+        "plan.all",
+        "research",
+        "truth-changes:*",
+        "tech-items:*",
+        "acceptance",
+        "coverage",
+        "ui-contract",
+        "data-migration",
+        "techstack",
+        "features",
+        "dsl",
+        "glossary",
+        "contracts",
+        "data",
+        "constitution:task"
+      ],
+      "outputs": [
+        "plan:tasks.md"
+      ],
+      "via": "/task 的增量入口"
+    },
+    {
+      "name": "dev-finding",
+      "order": 0,
+      "inputs": [],
+      "outputs": [
+        "plan:features/acceptance/",
+        "plan:技術項.md"
+      ],
+      "via": "/dev-finding"
+    }
+  ],
+  "planner_prefixes": {
+    "UI": "ui-ux-plan",
+    "API": "api-plan",
+    "DB": "data-plan",
+    "FS": "storage-plan"
+  }
+}

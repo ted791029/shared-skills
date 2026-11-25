@@ -1,0 +1,44 @@
+put:
+  tags:
+    - 相簿
+  summary: 移動相簿順序
+  operationId: moveAlbum
+  description: 把指定相簿移到另一本之前；beforeAlbumId 為空表示移到最後。
+  x-inner-needs:
+    data:
+      - name: albums
+        access: write
+    files: []
+  parameters:
+    - $ref: ../../components/parameters/albumId.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            beforeAlbumId:
+              type:
+                - string
+                - 'null'
+              description: 目標前方的相簿；null 表示移到最後
+  responses:
+    '200':
+      description: 移動成功，回傳更新後的列表片段
+      content:
+        application/json:
+          schema:
+            $ref: ../../components/schemas/AlbumList.yaml
+    '404':
+      description: 相簿不存在
+      content:
+        application/json:
+          schema:
+            $ref: ../../components/schemas/Error.yaml
+    '409':
+      description: 儲存失敗，順序未變更
+      content:
+        application/json:
+          schema:
+            $ref: ../../components/schemas/Error.yaml

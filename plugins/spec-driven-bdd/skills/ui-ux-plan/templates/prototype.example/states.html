@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>狀態入口</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f4f0; --surface: #ffffff; --surface-2: #ece8e2; --text: #1d1b18; --muted: #77716a; --line: #e2dcd3; --accent: #3157d5;
+    --ok: #1a7f4b; --load: #3157d5; --empty: #8a6d1f; --error: #c9252d;
+    --shadow: 0 1px 2px rgba(45,30,15,.06), 0 8px 24px rgba(45,30,15,.08);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #141312; --surface: #1f1d1b; --surface-2: #2b2825; --text: #f3efe9; --muted: #a29b92; --line: #36322e; --accent: #8aa4ff; --ok: #4cc38a; --load: #8aa4ff; --empty: #e0b84f; --error: #ff6b6b; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35); }
+  }
+  body { margin: 0; background: var(--bg); }
+  main { max-width: 640px; margin: 0 auto; padding: 56px 20px 64px; }
+  h1 { margin: 0; font-size: 34px; font-weight: 800; letter-spacing: -.03em; }
+  h2 { margin: 36px 0 12px; padding-left: 4px; font-size: 13px; font-weight: 700; color: var(--muted); }
+  ul { list-style: none; margin: 0; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); }
+  a { display: flex; align-items: center; gap: 14px; padding: 14px 14px; border-radius: 14px; color: var(--text); text-decoration: none; font-size: 15px; font-weight: 600; line-height: 1.45; transition: background .15s; }
+  a:hover { background: var(--bg); }
+  a::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 18%, transparent); }
+  a[href*="state=loading"]::before { background: var(--load); box-shadow: 0 0 0 4px color-mix(in srgb, var(--load) 18%, transparent); }
+  a[href*="state=empty"]::before { background: var(--empty); box-shadow: 0 0 0 4px color-mix(in srgb, var(--empty) 18%, transparent); }
+  a[href*="state=error"]::before { background: var(--error); box-shadow: 0 0 0 4px color-mix(in srgb, var(--error) 18%, transparent); }
+  li + li { border-top: 1px solid var(--line); }
+  li:hover + li, li:hover { border-color: transparent; }
+  code { margin-left: auto; padding: 3px 9px; border-radius: 8px; background: var(--surface-2); color: var(--muted); font-size: 12px; font-weight: 500; white-space: nowrap; }
+  button { margin-top: 36px; height: 42px; padding: 0 20px; border-radius: 99px; border: 1px solid var(--line); background: var(--surface); color: var(--text); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
+  button:hover { background: var(--surface-2); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  @media (max-width: 520px) {
+    main { padding-top: 32px; }
+    h1 { font-size: 28px; }
+    a { flex-wrap: wrap; row-gap: 6px; }
+    code { margin-left: 24px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>狀態入口</h1>
+
+  <h2>主頁</h2>
+  <ul>
+    <li><a href="index.html">成功<code>index.html</code></a></li>
+    <li><a href="index.html?state=loading">載入<code>?state=loading</code></a></li>
+    <li><a href="index.html?state=empty">空狀態<code>?state=empty</code></a></li>
+    <li><a href="index.html?state=error">錯誤：排序儲存失敗、部分照片匯入失敗<code>?state=error</code></a></li>
+  </ul>
+
+  <h2>相簿頁</h2>
+  <ul>
+    <li><a href="album.html?id=2026-10-01">成功<code>album.html?id=2026-10-01</code></a></li>
+    <li><a href="album.html?id=2026-10-01&amp;state=loading">載入<code>&amp;state=loading</code></a></li>
+    <li><a href="album.html?id=2026-10-01&amp;state=error">錯誤：照片無法顯示、刪除失敗<code>&amp;state=error</code></a></li>
+    <li><a href="album.html?id=2026-09-21">只剩 1 張照片的相簿<code>album.html?id=2026-09-21</code></a></li>
+  </ul>
+
+  <button id="reset">清除操作紀錄，還原假資料</button>
+</main>
+<script>
+  document.getElementById('reset').onclick = () => {
+    try { Object.keys(localStorage).filter(k => k.startsWith('album-proto:')).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    document.getElementById('reset').textContent = '已還原';
+  };
+</script>
+</body>
+</html>

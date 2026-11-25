@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相簿</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f4f0;
+    --surface: #ffffff;
+    --surface-2: #ece8e2;
+    --text: #1d1b18;
+    --muted: #77716a;
+    --line: #e2dcd3;
+    --ink: #1d1b18;
+    --ink-text: #ffffff;
+    --accent: #3157d5;
+    --danger: #c9252d;
+    --danger-soft: #fbe6e6;
+    --chip: rgba(255,255,255,.86);
+    --chip-text: #3a3632;
+    --radius: 12px;
+    --shadow: 0 1px 2px rgba(45,30,15,.06), 0 8px 24px rgba(45,30,15,.08);
+    --ease: cubic-bezier(.2,.8,.2,1);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141312;
+      --surface: #1f1d1b;
+      --surface-2: #2b2825;
+      --text: #f3efe9;
+      --muted: #a29b92;
+      --line: #36322e;
+      --ink: #f3efe9;
+      --ink-text: #141312;
+      --accent: #8aa4ff;
+      --danger: #ff6b6b;
+      --danger-soft: rgba(255,107,107,.14);
+      --chip: rgba(31,29,27,.82);
+      --chip-text: #e8e3dc;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 10px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .hero { position: relative; overflow: hidden; }
+  .ambient { position: absolute; inset: -80px -80px 0; background-size: cover; background-position: center; filter: blur(70px) saturate(150%); opacity: .5; pointer-events: none; -webkit-mask-image: linear-gradient(#000 35%, transparent); mask-image: linear-gradient(#000 35%, transparent); }
+  @media (prefers-color-scheme: dark) { .ambient { opacity: .35; } }
+  .top { position: relative; }
+  .top-inner { max-width: 1200px; margin: 0 auto; padding: 24px 40px 28px; }
+  .back { display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 16px 0 10px; color: var(--chip-text); text-decoration: none; font-size: 14px; font-weight: 600; border-radius: 999px; background: var(--chip); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 1px 3px rgba(0,0,0,.08); transition: transform .15s var(--ease); }
+  .back:hover { transform: translateX(-2px); }
+  .back svg { width: 18px; height: 18px; }
+  h1 { margin: 28px 0 0; font-size: 36px; font-weight: 800; letter-spacing: -.03em; line-height: 1.15; }
+  .sub { margin: 8px 0 0; color: var(--muted); font-size: 15px; min-height: 22px; font-variant-numeric: tabular-nums; }
+
+  .wrap { position: relative; max-width: 1200px; margin: 0 auto; padding: 0 40px 80px; }
+  .photo-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 8px; }
+  .tile { position: relative; aspect-ratio: 1; overflow: hidden; border-radius: var(--radius); background: var(--surface-2); }
+  .tile::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(0,0,0,.28), transparent 40%); opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .tile:hover::after { opacity: 1; }
+  .tile.removing { animation: shrink .3s var(--ease) forwards; }
+  @keyframes shrink { to { opacity: 0; transform: scale(.85); } }
+  .tile-open { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: var(--radius); }
+  .tile-open:focus-visible { outline-offset: -3px; }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0; transition: opacity .4s ease, transform .6s var(--ease); }
+  .tile.loaded img { opacity: 1; }
+  .tile-open:hover img { transform: scale(1.05); }
+  .shimmer { background: linear-gradient(90deg, var(--surface-2) 0%, color-mix(in srgb, var(--surface-2) 40%, var(--surface)) 45%, var(--surface-2) 90%); background-size: 200% 100%; animation: shimmer 1.4s ease-in-out infinite; }
+  .tile.loaded { animation: none; background: var(--surface-2); }
+  @keyframes shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+  .badge { position: absolute; z-index: 1; left: 8px; bottom: 8px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px 4px 7px; border-radius: 99px; background: rgba(20,18,16,.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; font-size: 11px; font-weight: 600; pointer-events: none; }
+  .badge svg { width: 12px; height: 12px; }
+  .tile-del { position: absolute; z-index: 1; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 50%; border: 0; display: grid; place-items: center; background: var(--chip); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: var(--chip-text); cursor: pointer; opacity: 0; transform: scale(.85); transition: opacity .15s, transform .2s var(--ease), color .15s; box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+  .tile-del svg { width: 16px; height: 16px; }
+  .tile-del:hover { color: var(--danger); }
+  .tile:hover .tile-del, .tile-del:focus-visible { opacity: 1; transform: none; }
+  @media (hover: none) { .tile-del { display: none; } }
+
+  .broken { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: var(--surface-2); color: var(--muted); font-size: 12px; font-weight: 500; text-align: center; line-height: 1.45; }
+  .broken svg { width: 28px; height: 28px; opacity: .6; }
+
+  dialog.lightbox { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #0c0b0a; color: #f5f3ef; overflow: hidden; }
+  dialog.lightbox::backdrop { background: #0c0b0a; }
+  dialog.lightbox[open] { display: flex; flex-direction: column; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; } }
+  .lb-ambient { position: absolute; inset: -15%; background-size: cover; background-position: center; filter: blur(90px) saturate(160%); opacity: .4; pointer-events: none; transition: background-image .4s; }
+  .lb-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; }
+  .lb-btn { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 16px; border-radius: 99px; border: 0; background: rgba(255,255,255,.12); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #f5f3ef; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s; }
+  .lb-btn:hover { background: rgba(255,255,255,.22); }
+  .lb-btn svg { width: 16px; height: 16px; }
+  .lb-btn.danger:hover { background: rgba(255,90,90,.28); color: #ffb4ad; }
+  .lb-info { text-align: center; font-size: 13px; color: rgba(245,243,239,.7); line-height: 1.45; font-variant-numeric: tabular-nums; }
+  .lb-info strong { display: block; color: #f5f3ef; font-size: 15px; font-weight: 700; }
+  .lb-est { display: inline-block; margin-top: 4px; padding: 2px 9px; border-radius: 99px; background: rgba(255,255,255,.14); font-size: 11px; font-weight: 600; color: #f5f3ef; }
+  .lb-stage { position: relative; flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; padding: 0 88px 32px; touch-action: pan-y; }
+  .lb-media { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .lb-media img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; box-shadow: 0 30px 80px rgba(0,0,0,.55); animation: zoom .3s var(--ease); }
+  @keyframes zoom { from { opacity: 0; transform: scale(.97); } }
+  .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%; border: 0; display: grid; place-items: center; background: rgba(255,255,255,.12); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; cursor: pointer; transition: background .15s, opacity .2s; }
+  .lb-nav:hover:not(:disabled) { background: rgba(255,255,255,.24); }
+  .lb-nav:disabled { opacity: .2; cursor: default; }
+  .lb-nav svg { width: 22px; height: 22px; }
+  .lb-nav.prev { left: 20px; }
+  .lb-nav.next { right: 20px; }
+  .lb-spin { width: 36px; height: 36px; border-radius: 50%; border: 3px solid rgba(255,255,255,.15); border-top-color: #fff; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .lb-broken { max-width: 360px; padding: 32px 28px; border-radius: 22px; background: rgba(255,255,255,.06); text-align: center; color: rgba(245,243,239,.8); font-size: 15px; line-height: 1.65; }
+  .lb-broken svg { width: 48px; height: 48px; color: rgba(245,243,239,.45); margin-bottom: 10px; }
+  .lb-broken .lb-btn { margin-top: 18px; background: #f5f3ef; color: #1d1b18; }
+
+  dialog.confirm { width: min(360px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: 24px; padding: 28px 24px 20px; text-align: center; background: var(--surface); color: var(--text); box-shadow: 0 40px 100px rgba(0,0,0,.35); }
+  dialog.confirm::backdrop { background: rgba(20,16,12,.42); backdrop-filter: blur(4px); }
+  dialog.confirm[open] { animation: pop .25s var(--ease); }
+  @keyframes pop { from { opacity: 0; transform: scale(.95); } }
+  .confirm-icon { width: 52px; height: 52px; margin: 0 auto 14px; border-radius: 50%; display: grid; place-items: center; background: var(--danger-soft); color: var(--danger); }
+  .confirm-icon svg { width: 24px; height: 24px; }
+  .confirm h2 { margin: 0 0 8px; font-size: 17px; font-weight: 800; line-height: 1.45; }
+  .confirm p { margin: 0 0 22px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .confirm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn { height: 44px; border-radius: 14px; border: 0; font-size: 15px; font-weight: 700; cursor: pointer; background: var(--surface-2); transition: background .15s, transform .1s; }
+  .btn:hover { background: var(--line); }
+  .btn:active { transform: scale(.97); }
+  .btn.danger { background: var(--danger); color: #fff; }
+  .btn.danger:hover { background: color-mix(in srgb, var(--danger) 85%, #000); }
+
+  .toast { position: fixed; left: 50%; bottom: 32px; z-index: 2147483647; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px); padding: 13px 20px; border-radius: 16px; background: var(--ink); color: var(--ink-text); font-size: 14px; font-weight: 500; line-height: 1.5; box-shadow: 0 14px 36px rgba(0,0,0,.25); transition: opacity .2s, transform .3s var(--ease); }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  dialog.lightbox .toast { background: rgba(245,243,239,.96); color: #1d1b18; }
+
+  @media (max-width: 600px) {
+    .top-inner { padding: 14px 16px 18px; }
+    h1 { margin-top: 18px; font-size: 24px; }
+    .sub { font-size: 13.5px; }
+    .wrap { padding: 0 0 56px; }
+    .photo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; }
+    .tile, .tile-open { border-radius: 0; }
+    .badge { left: 4px; bottom: 4px; font-size: 10px; padding: 2px 6px; }
+    .badge svg { display: none; }
+    .lb-stage { padding: 0 0 20px; }
+    .lb-nav { display: none; }
+    .lb-btn .label { display: none; }
+    .lb-media img { border-radius: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="ambient" id="ambient" aria-hidden="true"></div>
+  <header class="top">
+    <div class="top-inner">
+      <a class="back" id="back" href="index.html"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3.5L5.5 9l5.5 5.5"/></svg>相簿</a>
+      <h1 id="title"></h1>
+      <p class="sub" id="sub"></p>
+    </div>
+  </header>
+</div>
+
+<main class="wrap">
+  <ul class="photo-grid" id="grid" data-testid="album-photo-grid"></ul>
+  <div id="sentinel" aria-hidden="true" style="height:1px"></div>
+</main>
+
+<dialog class="lightbox" id="lightbox" data-testid="photo-lightbox" aria-label="照片放大檢視">
+  <div class="lb-ambient" id="lb-ambient" aria-hidden="true"></div>
+  <div class="lb-bar">
+    <button class="lb-btn" id="lb-close"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg><span>返回相簿</span></button>
+    <div class="lb-info" id="lb-info" aria-live="polite"></div>
+    <button class="lb-btn danger" id="lb-del"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5"/></svg><span class="label">刪除照片</span></button>
+  </div>
+  <div class="lb-stage" id="lb-stage">
+    <button class="lb-nav prev" id="lb-prev" aria-label="上一張"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4l-7 7 7 7"/></svg></button>
+    <div class="lb-media" id="lb-media"></div>
+    <button class="lb-nav next" id="lb-next" aria-label="下一張"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4l7 7-7 7"/></svg></button>
+  </div>
+  <div class="toast" id="lb-toast" role="status"></div>
+</dialog>
+
+<dialog class="confirm" id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+  <div class="confirm-icon" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5"/></svg></div>
+  <h2 id="confirm-title">要從相簿移除這張照片嗎？</h2>
+  <p id="confirm-desc">裝置上的原始檔不會被刪除。</p>
+  <div class="confirm-actions">
+    <button class="btn" value="cancel" id="confirm-cancel">取消</button>
+    <button class="btn danger" id="confirm-ok">刪除照片</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- 情境與假資料 ---------- */
+const params = new URLSearchParams(location.search);
+const SCENARIO = ['loading', 'empty', 'error'].includes(params.get('state')) ? params.get('state') : '';
+const NS = 'album-proto:' + (SCENARIO || 'default') + ':';
+function load(key, fallback) { try { const v = localStorage.getItem(NS + key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+function save(key, val) { try { localStorage.setItem(NS + key, JSON.stringify(val)); } catch (e) {} }
+function withState(url) { return SCENARIO ? url + (url.includes('?') ? '&' : '?') + 'state=' + SCENARIO : url; }
+
+const BASE_ALBUMS = SCENARIO === 'empty' ? [] : [
+  ['2026-10-18', 24], ['2026-10-12', 8], ['2026-10-11', 36], ['2026-10-05', 3],
+  ['2026-10-01', 50], ['2026-09-27', 12], ['2026-09-21', 1], ['2026-09-20', 18],
+  ['2026-09-13', 6], ['2026-09-06', 27], ['2026-08-30', 9], ['2026-08-15', 64],
+];
+const store = { added: load('added', {}), deleted: new Set(load('deleted', [])), order: load('order', null) };
+function persist() { save('added', store.added); save('deleted', [...store.deleted]); save('order', store.order); }
+
+function hash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function rng(seed) { let s = seed || 1; return () => { s ^= s << 13; s ^= s >>> 17; s ^= s << 5; return ((s >>> 0) % 100000) / 100000; }; }
+
+const WEEK = '日一二三四五六';
+function albumName(id) { const [y, m, d] = id.split('-').map(Number); return `${y}年${m}月${d}日（星期${WEEK[new Date(y, m - 1, d).getDay()]}）`; }
+function totalOf(id) { const b = BASE_ALBUMS.find(a => a[0] === id); return (b ? b[1] : 0) + (store.added[id] || 0); }
+function photosOf(id) {
+  const list = [];
+  for (let i = 0, n = totalOf(id); i < n; i++) {
+    const pid = id + '-' + i;
+    if (store.deleted.has(pid)) continue;
+    const r = rng(hash(pid));
+    list.push({ id: pid, minutes: 7 * 60 + Math.floor(r() * 14 * 60), portrait: r() < .28, estimated: hash(pid + 'e') % 19 === 0 });
+  }
+  return list.sort((a, b) => a.minutes - b.minutes || (a.id < b.id ? -1 : 1));
+}
+function timeLabel(minutes) { const h = Math.floor(minutes / 60), m = String(minutes % 60).padStart(2, '0'); return `${h < 12 ? '上午' : '下午'} ${h % 12 || 12}:${m}`; }
+
+/* ---------- 假照片：依拍攝時段產生風景 ---------- */
+const PALETTES = {
+  dawn:    { sky: ['#f3a99a', '#fde6d4'], sun: '#fff4e0', far: '#e3a596', near: '#5e3d48' },
+  mist:    { sky: ['#b7c4cd', '#eef1f2'], sun: '#ffffff', far: '#a7b6bf', near: '#43555f' },
+  morning: { sky: ['#78b1e3', '#eaf4fb'], sun: '#fffbe8', far: '#9cc3b2', near: '#27523f' },
+  noon:    { sky: ['#3f97dc', '#cfe8f7'], sun: '#ffffff', far: '#7cae9d', near: '#1f4a3a' },
+  golden:  { sky: ['#ea9050', '#fcdcae'], sun: '#fff1c8', far: '#cc8a68', near: '#462a24' },
+  dusk:    { sky: ['#3a3577', '#f2937a'], sun: '#ffd59c', far: '#7a5a8c', near: '#1e1733' },
+  night:   { sky: ['#08122b', '#2c4470'], sun: '#f2efe2', far: '#22345a', near: '#060d1b' },
+};
+function paletteFor(minutes, r) {
+  const h = minutes / 60;
+  if (h < 8.5) return r() < .5 ? 'dawn' : 'mist';
+  if (h < 11) return r() < .75 ? 'morning' : 'mist';
+  if (h < 15.5) return 'noon';
+  if (h < 17.5) return 'golden';
+  if (h < 19) return 'dusk';
+  return 'night';
+}
+function mix(a, b, t) {
+  const pa = parseInt(a.slice(1), 16), pb = parseInt(b.slice(1), 16);
+  return '#' + [16, 8, 0].map(s => Math.round(((pa >> s) & 255) * (1 - t) + ((pb >> s) & 255) * t).toString(16).padStart(2, '0')).join('');
+}
+const photoCache = new Map();
+function photoSrc(p) {
+  if (photoCache.has(p.id)) return photoCache.get(p.id);
+  const r = rng(hash(p.id + 'scene'));
+  const W = p.portrait ? 900 : 1200, H = p.portrait ? 1200 : 900, R = Math.round;
+  const key = paletteFor(p.minutes, r), pal = PALETTES[key], night = key === 'night';
+  const kind = ['mountain', 'sea', 'hills', 'city'][Math.floor(r() * 4)];
+  const horizon = H * (.52 + r() * .14);
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"><defs>`
+    + `<linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${pal.sky[0]}"/><stop offset="${(horizon / H).toFixed(2)}" stop-color="${pal.sky[1]}"/></linearGradient>`
+    + `<radialGradient id="s"><stop offset="0" stop-color="${pal.sun}"/><stop offset=".3" stop-color="${pal.sun}" stop-opacity=".55"/><stop offset="1" stop-color="${pal.sun}" stop-opacity="0"/></radialGradient>`
+    + `<linearGradient id="h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${pal.sky[1]}" stop-opacity="0"/><stop offset=".5" stop-color="${pal.sky[1]}" stop-opacity=".55"/><stop offset="1" stop-color="${pal.sky[1]}" stop-opacity="0"/></linearGradient>`
+    + `<radialGradient id="v" cx=".5" cy=".45" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="${night ? .45 : .28}"/></radialGradient>`
+    + `</defs><rect width="${W}" height="${H}" fill="url(#g)"/>`;
+  if (night) for (let i = 0; i < 80; i++) s += `<circle cx="${R(r() * W)}" cy="${R(r() * H * .55)}" r="${(r() * 2 + .5).toFixed(1)}" fill="#fff" opacity="${(r() * .6 + .2).toFixed(2)}"/>`;
+  const sx = W * (.15 + r() * .7), sy = horizon - H * (.1 + r() * .25), sr = Math.min(W, H) * (.04 + r() * .03);
+  s += `<circle cx="${R(sx)}" cy="${R(sy)}" r="${R(sr * 6)}" fill="url(#s)" opacity=".8"/><circle cx="${R(sx)}" cy="${R(sy)}" r="${R(sr)}" fill="${pal.sun}"/>`;
+  if (!night) for (let i = 0; i < 3; i++) {
+    const cx = r() * W, cy = H * (.1 + r() * .28), cw = W * (.1 + r() * .16);
+    s += `<ellipse cx="${R(cx)}" cy="${R(cy)}" rx="${R(cw)}" ry="${R(cw * .14)}" fill="#fff" opacity="${(.25 + r() * .25).toFixed(2)}"/><ellipse cx="${R(cx + cw * .25)}" cy="${R(cy - cw * .08)}" rx="${R(cw * .5)}" ry="${R(cw * .13)}" fill="#fff" opacity=".35"/>`;
+  }
+  const ridge = (base, amp, step) => {
+    const pts = []; for (let x = -step; x <= W + step; x += step) pts.push([x, base - r() * amp]);
+    let d = `M0 ${H} L0 ${R(pts[0][1])}`;
+    for (let i = 0; i < pts.length - 1; i++) { const [x1, y1] = pts[i], [x2, y2] = pts[i + 1]; d += ` Q${R(x1)} ${R(y1)} ${R((x1 + x2) / 2)} ${R((y1 + y2) / 2)}`; }
+    return d + ` L${W} ${H}Z`;
+  };
+  const haze = y => `<rect y="${R(y - H * .12)}" width="${W}" height="${R(H * .24)}" fill="url(#h)"/>`;
+  if (kind === 'sea') {
+    s += `<path d="${ridge(horizon, H * .05, W / 5)}" fill="${mix(pal.far, pal.sky[1], .45)}"/>` + haze(horizon);
+    s += `<rect y="${R(horizon)}" width="${W}" height="${R(H - horizon)}" fill="${mix(pal.sky[0], pal.near, .4)}"/>`;
+    for (let i = 0; i < 16; i++) { const y = horizon + 8 + i * (H - horizon) / 16, w = sr * (1.2 + i * .55); s += `<rect x="${R(sx - w / 2 + (r() - .5) * 26)}" y="${R(y)}" width="${R(w)}" height="3" rx="1.5" fill="${pal.sun}" opacity="${(.6 - i * .03).toFixed(2)}"/>`; }
+    s += `<path d="M0 ${H} L0 ${R(H * .9)} Q${R(W * .3)} ${R(H * .85)} ${R(W * .6)} ${R(H * .92)} T${W} ${R(H * .89)} L${W} ${H}Z" fill="${mix(pal.near, '#e8d9b8', night ? .1 : .5)}"/>`;
+  } else if (kind === 'city') {
+    s += `<path d="${ridge(horizon, H * .08, W / 5)}" fill="${mix(pal.far, pal.sky[1], .4)}"/>` + haze(horizon);
+    const base = horizon + H * .12;
+    for (let x = -10; x < W;) {
+      const bw = 50 + r() * 70, bh = H * (.08 + r() * .3), c = mix(pal.far, pal.near, .55 + r() * .35);
+      s += `<rect x="${R(x)}" y="${R(base - bh)}" width="${R(bw)}" height="${R(bh + H)}" rx="2" fill="${c}"/>`;
+      if (night || key === 'dusk') for (let wy = base - bh + 14; wy < base - 8; wy += 22) for (let wx = x + 10; wx < x + bw - 12; wx += 18) if (r() < .45) s += `<rect x="${R(wx)}" y="${R(wy)}" width="8" height="10" rx="1" fill="#ffd98a" opacity="${(.5 + r() * .5).toFixed(2)}"/>`;
+      x += bw + 4;
+    }
+    s += `<rect y="${R(base)}" width="${W}" height="${R(H - base)}" fill="${pal.near}"/>`;
+  } else {
+    const tall = kind === 'mountain';
+    for (let li = 0; li < 3; li++) {
+      s += `<path d="${ridge(horizon + li * H * .1, H * (tall ? .3 - li * .07 : .1), tall ? W / 7 : W / 3.5)}" fill="${mix(mix(pal.far, pal.near, li / 2), pal.sky[1], (2 - li) * .16)}"/>`;
+      if (li < 2) s += haze(horizon + li * H * .1 + H * .04);
+    }
+  }
+  s += `<rect width="${W}" height="${H}" fill="url(#v)"/>`;
+  const url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s + '</svg>');
+  photoCache.set(p.id, url);
+  return url;
+}
+
+/* ---------- 共用回饋 ---------- */
+let toastTimer;
+function toast(msg) {
+  const el = document.getElementById(lightbox.open ? 'lb-toast' : 'toast');
+  document.querySelectorAll('.toast').forEach(t => t.classList.remove('show'));
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+/* ---------- 頁面資料 ---------- */
+const albumId = params.get('id');
+const backHref = withState('index.html');
+document.getElementById('back').href = backHref;
+if (!albumId || totalOf(albumId) === 0 || photosOf(albumId).length === 0) location.replace(backHref);
+const albumTitle = albumName(albumId || '2026-01-01');
+document.title = albumTitle;
+document.getElementById('title').textContent = albumTitle;
+
+let photos = photosOf(albumId);
+const BROKEN = SCENARIO === 'error' ? { 3: 'corrupt', 7: 'heic' } : {};
+const brokenIds = new Map(Object.entries(BROKEN).map(([i, kind]) => [photos[i] && photos[i].id, kind]));
+function updateSub() { document.getElementById('sub').textContent = `${photos.length} 張照片・${timeLabel(photos[0].minutes)} – ${timeLabel(photos[photos.length - 1].minutes)}`; }
+function updateAmbient() { if (photos.length) document.getElementById('ambient').style.backgroundImage = `url("${photoSrc(photos[0])}")`; }
+
+/* ---------- 平鋪格線 ---------- */
+const grid = document.getElementById('grid');
+const PAGE = 24;
+let shown = 0;
+const TRASH = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.8 6.5v4.5M9.2 6.5v4.5"/></svg>';
+const CLOCK = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="6" cy="6" r="4.6"/><path d="M6 3.6V6l1.6 1"/></svg>';
+const BROKEN_ICON = '<svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="20" height="16" rx="3"/><path d="M3 17l6-5 4 3M17 9l-4 8"/></svg>';
+const BROKEN_TEXT = { corrupt: '無法顯示此照片', heic: '此瀏覽器無法預覽 HEIC 照片' };
+
+function tileFor(p, i) {
+  const li = document.createElement('li');
+  li.className = 'tile shimmer';
+  li.dataset.id = p.id;
+  const alt = `${albumTitle}，第 ${i + 1} 張`;
+  const kind = brokenIds.get(p.id);
+  li.innerHTML = kind
+    ? `<button class="tile-open" aria-label="${alt}，${BROKEN_TEXT[kind]}"><div class="broken">${BROKEN_ICON}${BROKEN_TEXT[kind]}</div></button>`
+    : `<button class="tile-open"><img alt="${alt}"></button>${p.estimated ? `<span class="badge">${CLOCK}日期為推估</span>` : ''}`;
+  li.insertAdjacentHTML('beforeend', `<button class="tile-del" aria-label="刪除第 ${i + 1} 張照片">${TRASH}</button>`);
+  if (kind) li.classList.add('loaded');
+  else {
+    const img = li.querySelector('img');
+    img.onload = () => setTimeout(() => li.classList.add('loaded'), 60 + Math.random() * 380);
+    img.src = photoSrc(p);
+  }
+  return li;
+}
+function renderTiles(count) {
+  grid.innerHTML = '';
+  photos.slice(0, count).forEach((p, i) => grid.appendChild(tileFor(p, i)));
+  shown = Math.min(count, photos.length);
+  grid.querySelectorAll('.tile').forEach(t => t.classList.add('loaded'));
+}
+function loadMore() {
+  if (shown >= photos.length || grid.querySelector('.pending')) return;
+  const next = photos.slice(shown, shown + PAGE);
+  const skeletons = next.map(() => { const li = document.createElement('li'); li.className = 'tile shimmer pending'; grid.appendChild(li); return li; });
+  setTimeout(() => {
+    next.forEach((p, k) => skeletons[k].replaceWith(tileFor(p, shown + k)));
+    shown += next.length;
+    observer.unobserve(sentinel); observer.observe(sentinel);
+  }, SCENARIO === 'loading' ? 1e9 : 350);
+}
+const sentinel = document.getElementById('sentinel');
+const observer = new IntersectionObserver(entries => { if (entries[0].isIntersecting) loadMore(); }, { rootMargin: '400px' });
+
+grid.addEventListener('click', e => {
+  const tile = e.target.closest('.tile:not(.pending)');
+  if (!tile) return;
+  const index = photos.findIndex(p => p.id === tile.dataset.id);
+  if (e.target.closest('.tile-del')) askDelete(index, tile.querySelector('.tile-del'));
+  else if (e.target.closest('.tile-open')) openLightbox(index, tile.querySelector('.tile-open'));
+});
+
+/* ---------- 燈箱 ---------- */
+const lightbox = document.getElementById('lightbox');
+const lbMedia = document.getElementById('lb-media');
+const lbAmbient = document.getElementById('lb-ambient');
+const lbPrev = document.getElementById('lb-prev'), lbNext = document.getElementById('lb-next');
+let current = 0, returnFocus = null;
+
+function openLightbox(index, from) {
+  returnFocus = from;
+  lightbox.showModal();
+  show(index);
+}
+function show(index) {
+  current = index;
+  const p = photos[index], kind = brokenIds.get(p.id);
+  document.getElementById('lb-info').innerHTML = `<strong>${index + 1}／${photos.length}</strong>${timeLabel(p.minutes)}${p.estimated ? '<br><span class="lb-est">日期為推估</span>' : ''}`;
+  lbPrev.disabled = index === 0;
+  lbNext.disabled = index === photos.length - 1;
+  lbAmbient.style.backgroundImage = kind ? 'none' : `url("${photoSrc(p)}")`;
+  if (kind) {
+    lbMedia.innerHTML = `<div class="lb-broken">${BROKEN_ICON}<div>${kind === 'heic' ? '此瀏覽器無法預覽 HEIC 照片。' : '無法顯示此照片。'}可以下載原始檔，或查看其他照片。</div><button class="lb-btn" id="lb-download">下載原始檔</button></div>`;
+    document.getElementById('lb-download').onclick = () => toast('已開始下載原始檔');
+    return;
+  }
+  lbMedia.innerHTML = '<div class="lb-spin" role="img" aria-label="載入中"></div>';
+  const img = new Image();
+  img.alt = `${albumTitle}，第 ${index + 1} 張`;
+  img.onload = () => setTimeout(() => { if (current === index) { lbMedia.innerHTML = ''; lbMedia.appendChild(img); } }, 120);
+  img.src = photoSrc(p);
+}
+function step(d) { const n = current + d; if (n >= 0 && n < photos.length) show(n); }
+lbPrev.onclick = () => step(-1);
+lbNext.onclick = () => step(1);
+document.getElementById('lb-close').onclick = () => lightbox.close();
+lightbox.addEventListener('keydown', e => {
+  if (document.getElementById('confirm').open) return;
+  if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+});
+lightbox.addEventListener('close', () => {
+  const tile = grid.querySelector(`.tile[data-id="${photos[current] && photos[current].id}"] .tile-open`);
+  (tile || returnFocus || document.getElementById('back')).focus({ preventScroll: false });
+});
+let swipeX = null;
+const stage = document.getElementById('lb-stage');
+stage.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') swipeX = e.clientX; });
+stage.addEventListener('pointerup', e => { if (swipeX === null) return; const dx = e.clientX - swipeX; swipeX = null; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); });
+document.getElementById('lb-del').onclick = e => askDelete(current, e.currentTarget);
+
+/* ---------- 刪除 ---------- */
+const confirmDlg = document.getElementById('confirm');
+let pendingDelete = null;
+function askDelete(index, from) { pendingDelete = { index, from }; confirmDlg.showModal(); document.getElementById('confirm-cancel').focus(); }
+document.getElementById('confirm-cancel').onclick = () => confirmDlg.close();
+confirmDlg.addEventListener('click', e => { if (e.target === confirmDlg) confirmDlg.close(); });
+confirmDlg.addEventListener('close', () => { if (pendingDelete && pendingDelete.from && pendingDelete.from.isConnected) pendingDelete.from.focus(); });
+document.getElementById('confirm-ok').onclick = () => {
+  const { index } = pendingDelete;
+  confirmDlg.close();
+  if (SCENARIO === 'error') { toast('無法刪除這張照片，請再試一次。'); return; }
+  const p = photos[index];
+  store.deleted.add(p.id);
+  persist();
+  photos = photos.filter(x => x.id !== p.id);
+  if (photos.length === 0) {
+    try { sessionStorage.setItem('album-proto-flash', `已刪除最後一張照片，「${albumTitle}」已從相簿列表移除。`); } catch (e) {}
+    location.href = backHref;
+    return;
+  }
+  updateSub();
+  updateAmbient();
+  const tile = grid.querySelector(`.tile[data-id="${p.id}"]`);
+  const rerender = () => { const keep = Math.max(shown - 1, Math.min(PAGE, photos.length)); renderTiles(keep); };
+  if (tile) { tile.classList.add('removing'); setTimeout(rerender, 280); } else rerender();
+  if (lightbox.open) show(Math.min(index, photos.length - 1));
+  toast('已刪除照片');
+};
+
+/* ---------- 啟動 ---------- */
+if (photos.length) {
+  updateSub();
+  updateAmbient();
+  if (SCENARIO === 'loading') {
+    grid.innerHTML = Array.from({ length: 18 }, () => '<li class="tile shimmer" aria-hidden="true"></li>').join('');
+    grid.setAttribute('aria-busy', 'true');
+  } else {
+    photos.slice(0, PAGE).forEach((p, i) => grid.appendChild(tileFor(p, i)));
+    shown = Math.min(PAGE, photos.length);
+    observer.observe(sentinel);
+  }
+}
+</script>
+</body>
+</html>

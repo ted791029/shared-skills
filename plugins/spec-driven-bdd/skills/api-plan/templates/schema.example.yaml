@@ -1,0 +1,14 @@
+type: object
+description: 匯入一張新照片成功的回應
+required:
+  - status
+  - photo
+  - album
+properties:
+  status:
+    type: string
+    description: 固定為 created，表示這張照片是新匯入的
+  photo:
+    $ref: ./Photo.yaml
+  album:
+    $ref: ./Album.yaml

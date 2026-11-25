@@ -1,0 +1,19 @@
+Project photo_album_organizer {
+  Note: '''
+    # 資料模型
+
+    資料模型依模組分成 相簿.dbml、照片.dbml 兩個檔，由本檔匯入。
+
+    ## 交易邊界
+
+    | 交易 | 範圍 | 失敗處理 |
+    |---|---|---|
+    | 匯入一張照片 | 檔案已就位後，建立不存在的相簿並插入 photos | 整筆回滾，並刪除剛搬入的檔案 |
+    | 第一次自訂排序 | 更新所有 albums.position 與 app_settings 的 album_order_mode | 整筆回滾，模式維持 date |
+    | 移動相簿 | 更新多本相簿的 albums.position | 整筆回滾 |
+    | 刪除照片 | 刪除 photos 列；若該相簿已無照片則刪除 albums 列 | 整筆回滾，檔案刪除只在交易成功後執行 |
+  '''
+}
+
+reuse * from './相簿'
+reuse * from './照片'

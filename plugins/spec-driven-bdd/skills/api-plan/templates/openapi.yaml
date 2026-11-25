@@ -1,0 +1,28 @@
+openapi: 3.1.0
+info:
+  title: {{api_title}}
+  version: {{api_version}}
+  description: {{api_description}}
+servers:
+  - url: {{server_url}}
+    description: {{server_description}}
+tags:
+  # 重複開始：每個模組一項
+  - name: {{module_name}}
+  # 重複結束
+paths:
+  # 重複開始：每個路徑一項
+  {{api_path}}:
+    $ref: paths/{{module_name}}/{{path_file_name}}.yaml
+  # 重複結束
+components:
+  parameters:
+    # 重複開始：每個共用的參數一項
+    {{shared_parameter_name}}:
+      $ref: components/parameters/{{shared_parameter_name}}.yaml
+    # 重複結束
+  schemas:
+    # 重複開始：每個 schema 一項
+    {{schema_name}}:
+      $ref: components/schemas/{{schema_name}}.yaml
+    # 重複結束
