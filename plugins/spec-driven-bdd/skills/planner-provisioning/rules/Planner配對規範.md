@@ -74,7 +74,7 @@
 |---|---|---|
 | 已有 | 有同名 skill，且 description 的負責端點與該列相同 | 直接使用 |
 | 疑似已有（`<skill 名稱>`） | 沒有同名 skill，但有其他 skill 的 description 負責同類型端點 | 請使用者決定沿用、改名或另建 |
-| 不符 | 有同名 skill，但 description 負責其他類型的端點 | 建議使用者以 skill-engineering（可由 skill-workshop plugin 提供，或為同層的 `skill-engineering` 資料夾） 優化，不撰寫委派簡報 |
+| 不符 | 有同名 skill，但 description 負責其他類型的端點 | 建議使用者以 skill-engineering skill（可由 skill-workshop plugin 提供，或為與本 skill 資料夾同層的 `skill-engineering` 資料夾）優化，不撰寫委派簡報 |
 | 缺少 | 沒有同名 skill，也沒有負責同類型端點的 skill | 撰寫委派簡報 |
 
 ### Good Example

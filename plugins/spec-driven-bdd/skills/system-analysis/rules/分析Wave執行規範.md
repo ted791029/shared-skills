@@ -58,7 +58,7 @@ Wave 3 確認：specs/truth/data/ 已有資料模型、check_dbml.py 通過 → 
 
 **強度：MUST**
 
-Planner 只回報上游問題，不修改 plan.md 或其他擁有者的產出；執行 Wave 期間，system-analysis 也不得修改 plan.md 或任何 Planner skill。同一個 Wave 的 sub-agent 全部回傳後，才處理回傳中的上游問題（不論該 Planner 的結果是改了或不能改），system-analysis 自己在執行中發現 plan.md 有誤時也一樣：問題在 plan.md 時，指向同一個介面列或 Wave 的回報合併成一次修正，依差異只修正那些節並通過 check_plan.py 與憲法核對；問題在前置 Wave 端點的產出時不改 plan.md，把回報交給該端點的 Planner 重跑。之後只重跑依差異判定的端點，再進入下一個 Wave。Planner 的產出不符其樣板時，必須停止並建議使用者以 skill-engineering（可由 skill-workshop plugin 提供，或為同層的 `skill-engineering` 資料夾） 優化該 Planner。憲法衝突依 Rule 4 處理。
+Planner 只回報上游問題，不修改 plan.md 或其他擁有者的產出；執行 Wave 期間，system-analysis 也不得修改 plan.md 或任何 Planner skill。同一個 Wave 的 sub-agent 全部回傳後，才處理回傳中的上游問題（不論該 Planner 的結果是改了或不能改），system-analysis 自己在執行中發現 plan.md 有誤時也一樣：問題在 plan.md 時，指向同一個介面列或 Wave 的回報合併成一次修正，依差異只修正那些節並通過 check_plan.py 與憲法核對；問題在前置 Wave 端點的產出時不改 plan.md，把回報交給該端點的 Planner 重跑。之後只重跑依差異判定的端點，再進入下一個 Wave。Planner 的產出不符其樣板時，必須停止並建議使用者以 skill-engineering skill（可由 skill-workshop plugin 提供，或為與本 skill 資料夾同層的 `skill-engineering` 資料夾）優化該 Planner。憲法衝突依 Rule 4 處理。
 
 ### Good Example
 

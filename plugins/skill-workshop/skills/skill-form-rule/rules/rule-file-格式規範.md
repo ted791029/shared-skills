@@ -229,3 +229,28 @@ Good Example 必須示範該條 Rule 描述中的每項要求，不得使用與�
 每條 Rule 只能描述一個明確要求。
 ```
 ````
+
+## Rule 8 -- 其他 plugin 的 skill 以名稱提及
+
+**強度：MUST**
+
+RuleFile 的內文提到其他 plugin 的 skill 時，不得使用連結或 `/<plugin 名稱>:<skill 名稱>` 指令前綴，格式固定為 ``<skill 名稱> skill（可由 <plugin 名稱> plugin 提供，或為與本 skill 資料夾同層的 `<skill 名稱>` 資料夾）``，只是建議使用者改用該 skill 時，不加缺少該 skill 時的處理。各 plugin 分開安裝，相對路徑到不了其他 plugin；skill 也可能直接複製到不支援 plugin 的 agent，那裡沒有指令前綴。同一個 plugin 內的 skill 照常使用相對連結。以下 Example 中，`skill-engineering` 屬於 skill-workshop plugin，RuleFile 所屬的 skill 與 `plan-package` 屬於 spec-driven-bdd plugin。
+
+### Good Example
+
+這個範例的第 1 句以 skill 名稱提及其他 plugin 的 skill，括號寫出 plugin 與同層資料夾兩種來源，只是建議使用者改用，因此沒有缺少時的處理；第 2 句提到同一個 plugin 的 skill，照常使用相對連結。
+
+```markdown
+Planner 的產出不符其樣板時，必須停止並建議使用者以 skill-engineering skill（可由 skill-workshop plugin 提供，或為與本 skill 資料夾同層的 `skill-engineering` 資料夾）優化該 Planner。
+回報前必須依 [plan-package](../../plan-package/SKILL.md) 確認目標是進行中的 plan。
+```
+
+### Bad Example
+
+這個範例的第 1 句以相對路徑連到其他 plugin 的 skill，plugin 安裝後該路徑不存在；第 2 句使用指令前綴，skill 複製到不支援 plugin 的 agent 時沒有這個指令，使用者照做會找不到 skill；第 3 句只是建議卻加上安裝提示，agent 會誤以為缺少 skill-engineering 時必須停止流程。
+
+```markdown
+Planner 的產出不符其樣板時，必須停止並建議使用者以 [skill-engineering](../../../../skill-workshop/skills/skill-engineering/SKILL.md) 優化該 Planner。
+Planner 的產出不符其樣板時，必須停止並建議使用者以 `/skill-workshop:skill-engineering` 優化該 Planner。
+Planner 的產出不符其樣板時，必須停止並建議使用者以 skill-engineering skill（可由 skill-workshop plugin 提供，或為與本 skill 資料夾同層的 `skill-engineering` 資料夾）優化該 Planner，兩者都沒有時不得自行代替，停止並請使用者安裝 skill-workshop plugin。
+```
