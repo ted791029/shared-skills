@@ -463,6 +463,32 @@ def spec_units(source) -> dict[str, str]:
     return keyed("plan", "spec.md", units, skip=lambda key: key == "（開頭）" or key.split(SEP)[0] == "釐清紀錄")
 
 
+def requirement_sections(text: str) -> dict[str, str]:
+    """每個以 FR／NFR／SC 編號開頭的項目所在標題的節鍵，寫法與 markdown_units 的節鍵相同。"""
+    result: dict[str, str] = {}
+    path: list[tuple[int, str]] = []
+    base_key = "（開頭）"
+    in_fence = False
+    for raw in text.splitlines():
+        line = raw.rstrip()
+        if FENCE.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        heading = HEADING.match(line)
+        if heading:
+            level = len(heading.group(1))
+            path = [item for item in path if item[0] < level] + [(level, heading_key(heading.group(2)))]
+            titles = [title for lvl, title in path if lvl >= 2]
+            base_key = SEP.join(titles) if titles else "（開頭）"
+            continue
+        ident = ID_BULLET.match(line)
+        if ident:
+            result.setdefault(ident.group(2), base_key)
+    return result
+
+
 def requirement_ids(text: str) -> list[str]:
     """取出 FR、NFR、SC 編號，「FR-002～FR-005」這類範圍展開成每個編號。"""
     found = set(REQUIREMENT_ID.findall(text))
@@ -526,7 +552,7 @@ def select(source, ctx: dict, owner: dict, expr: str) -> dict[str, str]:
     if name == "design":
         return keyed("truth", "ui/DESIGN.md", md_artifact(source, "truth", "ui/DESIGN.md"))
     if name == "product":
-        return keyed("plan", "ui/PRODUCT.md", md_artifact(source, "plan", "ui/PRODUCT.md"))
+        return keyed("truth", "ui/PRODUCT.md", md_artifact(source, "truth", "ui/PRODUCT.md"))
     if name == "plan.all":
         return keyed("plan", "plan.md", md_artifact(source, "plan", "plan.md"), skip=lambda key: key == "（開頭）")
     if name == "plan.interfaces":
@@ -544,6 +570,13 @@ def select(source, ctx: dict, owner: dict, expr: str) -> dict[str, str]:
     if name == "spec.cited":
         cited = {item for row in plan_rows(source) if row["prefix"] == owner.get("prefix") for item in row["requirements"]}
         return {key: value for key, value in spec_units(source).items() if key.split(SEP)[-1] in cited}
+    if name == "spec.stories.cited":
+        # 介面列引用的需求所在的使用者故事段落：只改故事的使用者或情境時，撰寫原型的依據也跟著改變
+        cited = {item for row in plan_rows(source) if row["prefix"] == owner.get("prefix") for item in row["requirements"]}
+        text = source.plan_text("spec.md")
+        sections = requirement_sections(text) if text is not None else {}
+        wanted = {f"plan:spec.md{SEP}{sections[item]}" for item in cited if item in sections and STORY.match(sections[item].split(SEP)[-1])}
+        return {key: value for key, value in spec_units(source).items() if key in wanted}
     if name == "acceptance.cited":
         # 涵蓋註解引用了本端點介面列依據需求的 AC：只改 AC 時，Planner 也會判斷它的契約或 UI 契約是否與新的 AC 衝突
         cited = {item for row in plan_rows(source) if row["prefix"] == owner.get("prefix") for item in row["requirements"]}

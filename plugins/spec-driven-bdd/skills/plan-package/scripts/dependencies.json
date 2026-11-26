@@ -52,12 +52,22 @@
       ]
     },
     {
-      "path": "plan:ui/PRODUCT.md",
+      "path": "truth:ui/PRODUCT.md",
       "sections": [
         {
           "name": "每一節",
           "writers": "ui-direction（委派 ui-design 撰寫）",
-          "home": "本 plan 前端畫面的產品背景摘要與品牌個性；使用者、情境與功能限制以 spec.md 為準"
+          "home": "產品層級的產品背景：使用者族群、使用情境、產品用途、會改變整個產品能力邊界的限制、品牌個性與既有素材，跨 plan 累積；這次功能服務哪些使用者與情境以 spec.md 為準"
+        }
+      ]
+    },
+    {
+      "path": "plan:ui/設計方向.md",
+      "sections": [
+        {
+          "name": "整份",
+          "writers": "ui-direction",
+          "home": "本 plan 建立或取代設計方向時比較過的候選、選定方向與理由、被取代的方向；不是任何擁有者的輸入，下游以 truth:ui/DESIGN.md 為準"
         }
       ]
     },
@@ -286,7 +296,8 @@
         "constitution:self"
       ],
       "outputs": [
-        "plan:ui/PRODUCT.md",
+        "plan:ui/設計方向.md",
+        "truth:ui/PRODUCT.md",
         "truth:ui/DESIGN.md",
         "truth:ui/tokens.css",
         "truth:ui/tokens.json"
@@ -319,6 +330,7 @@
       "scheduled": [
         "plan.prefix",
         "spec.cited",
+        "spec.stories.cited",
         "acceptance.cited",
         "techstack",
         "design",
