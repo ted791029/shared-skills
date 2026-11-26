@@ -26,7 +26,7 @@ python "D:/work/report/.claude/skills/skill-pdf-form/scripts/extract_fields.py" 
 
 **強度：MUST**
 
-找不到 `uv` 指令時，必須先詢問使用者是否以 `python -m pip install uv` 安裝。使用者同意後才安裝，並改以 `python -m uv run <腳本路徑>` 執行；使用者拒絕時停止執行該 Step，並說明腳本需要 uv 才能執行。
+找不到 `uv` 指令時，必須先詢問使用者是否以 `python -m pip install uv` 安裝。使用者同意後才安裝，並改以 `python -m uv run <腳本路徑>` 執行；使用者拒絕時停止執行該 Step，並說明腳本需要 uv 才能執行。呼叫者標明不可詢問時（例如在 sub-agent 中執行），視同使用者拒絕：不得自行安裝，改依該 Step 所屬規範的退路處理（例如退回讀程式碼並寫明未實測），沒有退路時停止並回報。
 
 ### Good Example
 

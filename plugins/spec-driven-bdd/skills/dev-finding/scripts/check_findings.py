@@ -28,7 +28,7 @@ LEGACY_ITEM_PATTERN = re.compile(r"^- (.+)（([^（）；;]+)[；;](.+)）$")
 BARE_FIX_PATTERN = re.compile(r"^[；;]?\s*修正\s*[：:]\s*([^（）；;：:]*?)\s*$")
 TECH_ITEM_FORMAT = "- 問題（發現的 skill；依據；修正：擁有者）"
 FIX_OWNERS = (
-    "clarify-over-specs", "spec-by-example", "technical-research", "system-analysis",
+    "clarify-over-specs", "spec-by-example", "technical-research", "ui-direction", "system-analysis",
     "ui-ux-plan", "api-plan", "data-plan", "storage-plan", "dsl-refine", "dev-finding", "task",
 )
 PLANNER_NAME_PATTERN = re.compile(r"^[a-z]+-plan$")

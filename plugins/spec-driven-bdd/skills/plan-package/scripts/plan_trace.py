@@ -523,6 +523,10 @@ def select(source, ctx: dict, owner: dict, expr: str) -> dict[str, str]:
         return keyed("plan", "research.md", md_artifact(source, "plan", "research.md"))
     if name == "techstack":
         return keyed("truth", "techstack.md", md_artifact(source, "truth", "techstack.md"))
+    if name == "design":
+        return keyed("truth", "ui/DESIGN.md", md_artifact(source, "truth", "ui/DESIGN.md"))
+    if name == "product":
+        return keyed("plan", "ui/PRODUCT.md", md_artifact(source, "plan", "ui/PRODUCT.md"))
     if name == "plan.all":
         return keyed("plan", "plan.md", md_artifact(source, "plan", "plan.md"), skip=lambda key: key == "（開頭）")
     if name == "plan.interfaces":
@@ -659,6 +663,13 @@ def planner_relevant(owner: dict, ctx: dict, source) -> bool:
     return False
 
 
+def gate_open(owner: dict, ctx: dict) -> bool:
+    """有 gate_prefix 的擁有者（例如只服務前端的 ui-direction）只在 plan.md 有該前綴的介面列、或被技術項或 truth-changes.md 點名時才算數。"""
+    gate = owner.get("gate_prefix")
+    return (not gate or any(row["prefix"] == gate for row in ctx["rows"])
+            or owner["name"] in ctx["fix_owners"] or owner["name"] in ctx["truth_change_owners"])
+
+
 def input_exprs(owner: dict, ctx: dict, source) -> list[str]:
     if "prefix" not in owner:
         return owner.get("inputs", [])
@@ -777,10 +788,12 @@ class Tracker:
                 return int(last.split()[1])
         return 99
 
-    def status_of(self, owner: dict) -> dict:
-        exprs = input_exprs(owner, self.ctx, self.current)
-        current = compute_inputs(owner, exprs, self.current, self.ctx)
+    def status_of(self, owner: dict, recording: bool = False) -> dict:
         record = self.trace["owners"].get(owner["name"])
+        exprs = input_exprs(owner, self.ctx, self.current)
+        if record is None and not recording and not gate_open(owner, self.ctx):
+            exprs = []  # 沒有紀錄又不在服務範圍內（例如只有後端的 plan）：不列為待補跑；擁有者自己記錄時照常計算輸入
+        current = compute_inputs(owner, exprs, self.current, self.ctx)
         scheduled = planner_scheduled(owner, self.ctx) if "prefix" in owner else None
         fresh = record is not None and "prefix" in owner and record.get("scheduled") is False and scheduled
         if record is not None:
@@ -850,7 +863,7 @@ def run_record(plan_arg: str, owner_name: str, result_text: str) -> dict:
         raise Abort(f"--result 只接受「改了」或「不用改」，收到「{result_text}」。結果是「不能改」時不記錄：停下回報擋住的規則或上游與交辦對象，該擁有者會維持待補跑。")
     tracker = Tracker(plan_arg)
     owner = tracker.owner(owner_name)
-    status = tracker.status_of(owner)
+    status = tracker.status_of(owner, recording=True)
     now = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
     entry = {"recorded_at": now, "result": result_text, "inputs": status["current"]}
     if status["scheduled"] is not None:

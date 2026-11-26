@@ -52,6 +52,36 @@
       ]
     },
     {
+      "path": "plan:ui/PRODUCT.md",
+      "sections": [
+        {
+          "name": "每一節",
+          "writers": "ui-direction（委派 ui-design 撰寫）",
+          "home": "本 plan 前端畫面的產品背景摘要與品牌個性；使用者、情境與功能限制以 spec.md 為準"
+        }
+      ]
+    },
+    {
+      "path": "truth:ui/DESIGN.md",
+      "sections": [
+        {
+          "name": "每一節",
+          "writers": "ui-direction（委派 ui-design 撰寫）",
+          "home": "專案的視覺系統（色彩、字體、間距、圓角、陰影、動態、素材來源、元件）與會限制視覺的長期品牌承諾"
+        }
+      ]
+    },
+    {
+      "path": "truth:ui/tokens.css、truth:ui/tokens.json",
+      "sections": [
+        {
+          "name": "整份",
+          "writers": "ui-direction（委派 ui-design 以轉token.py 從 DESIGN.md 轉出）",
+          "home": "DESIGN.md token 表的程式用格式；不手動編輯，值以 DESIGN.md 為準"
+        }
+      ]
+    },
+    {
       "path": "plan:plan.md",
       "sections": [
         {
@@ -245,6 +275,25 @@
       "via": "/technical-research"
     },
     {
+      "name": "ui-direction",
+      "order": 35,
+      "gate_prefix": "UI",
+      "inputs": [
+        "spec.requirements",
+        "techstack",
+        "tech-items:self",
+        "findings-cited:self",
+        "constitution:self"
+      ],
+      "outputs": [
+        "plan:ui/PRODUCT.md",
+        "truth:ui/DESIGN.md",
+        "truth:ui/tokens.css",
+        "truth:ui/tokens.json"
+      ],
+      "via": "/ui-direction"
+    },
+    {
       "name": "system-analysis",
       "order": 40,
       "inputs": [
@@ -271,7 +320,9 @@
         "plan.prefix",
         "spec.cited",
         "acceptance.cited",
-        "techstack"
+        "techstack",
+        "design",
+        "product"
       ],
       "unscheduled": [],
       "always": [
@@ -280,7 +331,9 @@
         "constitution:self"
       ],
       "outputs": [
-        "plan:ui/"
+        "plan:ui/ui-contract.md",
+        "plan:ui/prototype/",
+        "plan:ui/檢查報告.md"
       ],
       "via": "/system-analysis 的依差異入口只重跑這個端點，或直接執行 /ui-ux-plan"
     },

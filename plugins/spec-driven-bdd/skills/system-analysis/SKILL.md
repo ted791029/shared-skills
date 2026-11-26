@@ -25,9 +25,12 @@ description: 使用者已有功能規格書（spec.md）與技術研究產物（
 6. THINK 依 [憲法套用規範](../constitution/rules/憲法套用規範.md) 逐條核對 plan.md 是否符合憲法條款，並判斷腳本回報的問題是否與條款衝突；plan.md 被條款或上游事實擋住而不能改時，不執行 Phase 3 與 Phase 4。
 7. WRITE 修正檢查與核對發現的問題。
 
-### Phase 3 --- 備妥 Planner
+### Phase 3 --- 備妥前置
 
 1. DELEGATE 依 [planner-provisioning](../planner-provisioning/SKILL.md) 在範圍內有這次新排進 Wave 的端點時，補建它們委派但缺少的 Planner。
+2. DELEGATE 依 [plan-package](../plan-package/SKILL.md) 以 check 帶入目標 plan 與本 skill 名稱，在這次要執行的 Wave 中有異動為 ADD 或 MOD 的前端介面列時，重新取得待補跑。
+3. DELEGATE 依 [前端設計前置規範](rules/前端設計前置規範.md) 與 [plan-package](../plan-package/SKILL.md) 在前端設計前置條件不齊時，以 record 記錄這次的結果是「改了」。
+4. ASK 依 [前端設計前置規範](rules/前端設計前置規範.md) 在前端設計前置條件不齊時，請使用者先執行 /ui-direction 再以依差異入口接續，不執行 Phase 4 與 Phase 5 並停止。
 
 ### Phase 4 --- 執行分析 Wave
 

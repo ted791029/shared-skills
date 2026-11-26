@@ -114,31 +114,27 @@
 <ul class="album-grid" data-testid="album-grid"></ul>
 ```
 
-## Rule 6 -- 原型以互動與狀態完整為優先
+## Rule 6 -- 原型的視覺依設計系統交由 ui-design
 
 **強度：MUST**
 
-原型必須優先完整呈現契約的操作、狀態與文案，視覺維持中等保真度即可；只使用內嵌的假資料，不得呼叫後端或外部服務。範例的視覺精細度、假資料產生方式與頁面配置屬於該功能的設計，不得照搬到其他功能；假資料必須依本功能的業務內容設計。
+這次範圍有新增的頁面或畫面有變動的修改頁面時，原型必須委派 ui-design skill（可由 ui-studio plugin 提供，或為與本 skill 資料夾同層的 `ui-design` 資料夾）撰寫，以 `specs/truth/ui/DESIGN.md` 為視覺依據，並把 `specs/truth/ui/tokens.css` 的內容原樣放進原型的 `<style>`，優先完整呈現契約的操作、狀態與文案；不得由本 skill 自行決定配色、字體與元件樣式；只為既有元素補上定位時不算畫面有變動，直接補上 `data-testid`，不委派也不需要 DESIGN.md。`specs/truth/ui/DESIGN.md` 或 `tokens.css` 不存在時不得撰寫原型，這次的結果是「不能改」，回報交給 ui-direction 建立設計方向或轉出 tokens。
 
 ### Good Example
 
-這個範例的表單功能以簡單色塊與文字呈現欄位，把篇幅花在驗證錯誤與送出中狀態的切換。
+這個範例依 DESIGN.md 委派撰寫原型，DESIGN.md 不存在的另一個 plan 則停止並交給 ui-direction。
 
-```html
-<form data-testid="signup-form">
-  <label>電子郵件 <input type="email" required></label>
-  <p class="error" hidden>請輸入有效的電子郵件。</p>
-</form>
+```text
+plan 005：specs/truth/ui/DESIGN.md 存在 → 委派 ui-design，以 DESIGN.md 的品牌藍、表格與按鈕元件撰寫 export.html，契約的四種狀態都能以 ?state= 切換。
+plan 006：specs/truth/ui/DESIGN.md 不存在 → 不撰寫原型，結果不能改，交給 ui-direction 建立設計方向。
 ```
 
 ### Bad Example
 
-這個範例為表單功能照搬相簿範例的 SVG 風景圖產生器作為背景，花大量篇幅在與本功能無關的視覺，狀態切換卻未完成。
+這個範例在沒有 DESIGN.md 時自行挑選配色寫出原型，實作照原型做出的畫面沒有經過設計方向的決定，下一個功能的頁面也找不到可以沿用的視覺系統。
 
-```html
-<script>
-function photoSrc(p) { /* 產生山景、海景 SVG …… */ }
-</script>
+```text
+plan 006：specs/truth/ui/DESIGN.md 不存在 → 先用灰階配色與系統字體寫出 signup.html，之後再補設計。
 ```
 
 ## Rule 7 -- 修改與移除的介面只寫這次的改變
@@ -291,4 +287,34 @@ AC-02（# 涵蓋：US1、FR-005）："王小明" 按 "取消預約" → 看到 "
 | 操作 | 互動 | 需要內層提供 |
 |---|---|---|
 | 取消預約 | 按「取消預約」後顯示「預約已取消」，這筆預約從清單移除 | 取消預約（預約編號） |
+```
+
+## Rule 11 -- 原型只用本功能的內嵌假資料
+
+**強度：MUST**
+
+原型只能使用內嵌的假資料，不得呼叫後端或外部服務；假資料必須依本功能的業務內容設計。範例原型的視覺精細度、假資料產生方式與頁面配置屬於該功能的設計，不得照搬到其他功能。
+
+### Good Example
+
+這個範例為報名表單功能內嵌幾筆符合業務內容的報名資料，沒有呼叫任何服務。
+
+```html
+<script>
+const registrations = [
+  { name: "林雅婷", course: "週六兒童陶藝", status: "已報名" },
+  { name: "陳柏翰", course: "平日成人拉坯", status: "候補第 2 位" }
+];
+</script>
+```
+
+### Bad Example
+
+這個範例為報名表單功能照搬相簿範例的 SVG 風景圖產生器，並向後端要資料；原型離不開後端就無法單獨開啟，與本功能無關的視覺還佔去大量篇幅。
+
+```html
+<script>
+function photoSrc(p) { /* 產生山景、海景 SVG …… */ }
+fetch("/api/registrations").then((res) => res.json()).then(render);
+</script>
 ```

@@ -17,6 +17,11 @@
       "name": "spec-driven-bdd",
       "source": "./plugins/spec-driven-bdd",
       "description": "以規格驅動（SDD）規劃、以 BDD 實作，從功能規格到通過測試的開發工作流"
+    },
+    {
+      "name": "ui-studio",
+      "source": "./plugins/ui-studio",
+      "description": "設計前端畫面，產出原型、設計系統、修改規格與素材，不修改專案程式碼"
     }
   ]
 }
