@@ -57,7 +57,7 @@
         {
           "name": "每一節",
           "writers": "ui-direction（委派 ui-design 撰寫）",
-          "home": "產品層級的產品背景：使用者族群、使用情境、產品用途、會改變整個產品能力邊界的限制、品牌個性與既有素材，跨 plan 累積；這次功能服務哪些使用者與情境以 spec.md 為準"
+          "home": "產品層級的產品背景：使用者族群、使用情境與主要工作、產品用途、產品刻意不做或還做不到的能力、會改變整個產品能力邊界的限制、品牌個性、設計禁區與既有素材，跨 plan 累積；這次功能服務哪些使用者與情境以 spec.md 為準"
         }
       ]
     },
@@ -67,7 +67,17 @@
         {
           "name": "整份",
           "writers": "ui-direction",
-          "home": "本 plan 建立或取代設計方向時比較過的候選、選定方向與理由、被取代的方向；不是任何擁有者的輸入，下游以 truth:ui/DESIGN.md 為準"
+          "home": "本 plan 建立或取代設計方向時比較過的候選、擲骰紀錄、使用者選定的方向與理由、被取代的方向；不是任何擁有者的輸入，下游以 truth:ui/DESIGN.md 為準"
+        }
+      ]
+    },
+    {
+      "path": "plan:ui/方向候選.json、plan:ui/方向選擇頁.html",
+      "sections": [
+        {
+          "name": "整份",
+          "writers": "ui-direction（委派 ui-design 推導候選、擲骰並產出選擇頁）",
+          "home": "本 plan 決定設計方向時的候選、每輪擲骰與使用者的選定，供重擲與重跑時接續；不是任何擁有者的輸入，結論記在 plan:ui/設計方向.md"
         }
       ]
     },
@@ -297,6 +307,8 @@
       ],
       "outputs": [
         "plan:ui/設計方向.md",
+        "plan:ui/方向候選.json",
+        "plan:ui/方向選擇頁.html",
         "truth:ui/PRODUCT.md",
         "truth:ui/DESIGN.md",
         "truth:ui/tokens.css",

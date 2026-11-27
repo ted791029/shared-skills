@@ -1,0 +1,49 @@
+{
+  "product": "{{product_name}}",
+  "mechanism": "{{product_mechanism}}",
+  "audience": "{{audience_context}}",
+  "constraints": [
+    "{{direction_constraint}}"
+  ],
+  "screen": {
+    "name": "{{screen_name}}",
+    "content": "{{screen_content}}",
+    "width": {{screen_width}},
+    "height": {{screen_height}}
+  },
+  "standard": {
+    "name": "{{standard_name}}",
+    "source_type": "類別標準做法",
+    "familiarity": "熟悉",
+    "why": "{{standard_why}}",
+    "ground": "{{standard_ground}}",
+    "main": "{{standard_main}}",
+    "type_voice": "{{standard_type_voice}}",
+    "signature": "{{standard_signature}}",
+    "metaphor": "{{standard_metaphor}}",
+    "first_view": "{{standard_first_view}}",
+    "risk": "{{standard_risk}}",
+    "swatches": ["{{standard_ground_hex}}", "{{standard_main_hex}}", "{{standard_accent_hex}}"]
+  },
+  "candidates": [
+    {
+      "id": "{{candidate_id}}",
+      "batch": {{candidate_batch}},
+      "name": "{{candidate_name}}",
+      "source_type": "{{candidate_source_type}}",
+      "familiarity": "{{candidate_familiarity}}",
+      "why": "{{candidate_why}}",
+      "ground": "{{candidate_ground}}",
+      "main": "{{candidate_main}}",
+      "type_voice": "{{candidate_type_voice}}",
+      "signature": "{{candidate_signature}}",
+      "metaphor": "{{candidate_metaphor}}",
+      "first_view": "{{candidate_first_view}}",
+      "risk": "{{candidate_risk}}",
+      "swatches": ["{{candidate_ground_hex}}", "{{candidate_main_hex}}", "{{candidate_accent_hex}}"],
+      "pick": {{candidate_is_pick}}
+    }
+  ],
+  "shown": [],
+  "rounds": []
+}

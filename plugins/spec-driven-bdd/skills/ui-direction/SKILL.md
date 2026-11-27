@@ -8,15 +8,16 @@ description: 使用者已有功能規格書（spec.md）與技術堆疊（techst
 ### Phase 1 --- 讀取輸入
 
 1. DELEGATE 依 [plan-package](../plan-package/SKILL.md) 以 check 帶入目標 plan 與本 skill 名稱，確認目標是進行中的 plan 並取得待補跑與本 skill 的輸入差異，被拒絕時停止。
-2. READ 讀取這個 plan 的 spec.md（技術修正 plan 沒有）、已存在的 plan.md 中的前端介面列、已有的 `ui/設計方向.md`、`技術項.md` 中「修正：ui-direction」的行、`specs/truth/techstack.md`、`specs/truth/ui/PRODUCT.md` 與 `specs/truth/ui/DESIGN.md`。
+2. READ 讀取這個 plan 的 spec.md（技術修正 plan 沒有）、已存在的 plan.md 中的前端介面列、已有的 `ui/設計方向.md` 與 `ui/方向候選.json`、`技術項.md` 中「修正：ui-direction」的行、`specs/truth/techstack.md`、`specs/truth/ui/PRODUCT.md` 與 `specs/truth/ui/DESIGN.md`。
 3. READ 依 [憲法套用規範](../constitution/rules/憲法套用規範.md) 讀取 `ui/設計方向.md`、`specs/truth/ui/PRODUCT.md` 與 `specs/truth/ui/DESIGN.md` 適用的憲法條款。
 4. THINK 依 [串接規範](../plan-package/rules/串接規範.md) 與 [設計範圍判斷規範](rules/設計範圍判斷規範.md) 判斷這次設計方向要建立、延伸、取代或不用改，以及產品背景要新增、修改、刪除的節，依差異時只把連帶異動列為這次的範圍。
 5. DELEGATE 依 [dev-finding](../dev-finding/SKILL.md) 與 [設計範圍判斷規範](rules/設計範圍判斷規範.md) 在 spec.md 缺少會改變設計的使用者、使用情境或功能時，以 record 記錄。
 
 ### Phase 2 --- 決定設計方向
 
-1. DELEGATE 使用 ui-design skill（可由 ui-studio plugin 提供，或為與本 skill 資料夾同層的 `ui-design` 資料夾）在這次範圍需要產品背景或設計方向時，以 Step 4 判斷的設計方向範圍與產品背景異動、spec.md、憲法條款與 techstack.md 為產品背景的來源、`specs/truth/ui/PRODUCT.md` 為既有產品背景、`specs/truth/ui/DESIGN.md` 為既有視覺世界，以決定設計方向為範圍（含搜尋參考候選與選定素材來源），兩者都沒有時不得自行代替，停止並請使用者安裝 ui-studio plugin，agent 不支援 plugin 時改為把 `ui-design` 與 `ui-assets` 資料夾複製到同層。
-2. WRITE 依 [設計方向紀錄規範](rules/設計方向紀錄規範.md) 與憲法條款與 [設計方向.md](templates/設計方向.md) 與 [設計方向.example.md](templates/設計方向.example.md) 在這次由本 plan 決定設計方向時，依 ui-design 的回報撰寫 plan 資料夾的 `ui/設計方向.md`。
+1. DELEGATE 使用 ui-design skill（可由 ui-studio plugin 提供，或為與本 skill 資料夾同層的 `ui-design` 資料夾）在這次範圍需要產品背景或設計方向時，以 Step 4 判斷的設計方向範圍與產品背景異動、spec.md、憲法條款與 techstack.md 為產品背景的來源、`specs/truth/ui/PRODUCT.md` 為既有產品背景、`specs/truth/ui/DESIGN.md` 為既有視覺世界、plan 資料夾的 `ui/` 為選擇頁位置，並帶入使用者對選擇頁的回覆（有時），以決定設計方向為範圍（含搜尋參考候選、擲骰、選擇頁與選定素材來源），兩者都沒有時不得自行代替，停止並請使用者安裝 ui-studio plugin，agent 不支援 plugin 時改為把 `ui-design` 與 `ui-assets` 資料夾複製到同層。
+2. ASK 在 ui-design 回報方向尚未選定時，請使用者開啟回報的選擇頁，把選定後頁面複製的文字貼回並重新執行本 skill，並停止。
+3. WRITE 依 [設計方向紀錄規範](rules/設計方向紀錄規範.md) 與憲法條款與 [設計方向.md](templates/設計方向.md) 與 [設計方向.example.md](templates/設計方向.example.md) 在 ui-design 回報這次建立或取代設計方向時，依回報撰寫 plan 資料夾的 `ui/設計方向.md`。
 
 ### Phase 3 --- 更新產品背景與設計系統
 

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{product_name}}：選一個畫面方向</title>
+<style>
+  :root { --ink: #1d1d1f; --muted: #5b5b63; --line: #d9d9de; --paper: #f6f6f3; --card: #ffffff; --focus: #1f5fbf; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+  header { padding: 2rem clamp(1rem, 4vw, 3rem) 1rem; max-width: 80rem; margin: 0 auto; }
+  h1 { font-size: clamp(1.5rem, 3vw, 2.25rem); margin: 0 0 0.5rem; text-wrap: balance; }
+  header p { margin: 0; color: var(--muted); max-width: 65ch; }
+  header p + p { margin-top: 0.5rem; }
+  main { display: grid; gap: 2rem; padding: 1rem clamp(1rem, 4vw, 3rem) 2rem; max-width: 80rem; margin: 0 auto; }
+  article { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: clamp(1rem, 2vw, 1.5rem); display: flex; flex-direction: column; gap: 1rem; }
+  article[data-kind="擲中"] { border: 2px solid var(--ink); }
+  .kind { font-size: 0.9rem; color: var(--muted); }
+  .kind strong { color: var(--ink); }
+  h2 { font-size: 1.25rem; margin: 0; }
+  .demo { position: relative; width: 100%; max-width: calc(var(--w) * 1px); aspect-ratio: var(--w) / var(--h); margin: 0 auto; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+  .demo iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: 0 0; transform: scale(var(--s, 1)); }
+  .open { align-self: center; color: var(--focus); }
+  .swatches { display: flex; gap: 0.375rem; }
+  .swatch { width: 2rem; height: 2rem; border-radius: 6px; border: 1px solid rgba(0, 0, 0, 0.15); }
+  dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.75rem 1.5rem; }
+  dt { font-size: 0.85rem; color: var(--muted); }
+  dd { margin: 0; }
+  button { font: inherit; cursor: pointer; border-radius: 8px; padding: 0.6rem 1rem; border: 1px solid var(--ink); background: var(--ink); color: #fff; }
+  button.secondary { background: var(--card); color: var(--ink); }
+  button:hover { opacity: 0.88; }
+  button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  article > button { align-self: flex-start; }
+  .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 1rem; }
+  .controls input { flex: 1 1 18rem; font: inherit; padding: 0.6rem 0.75rem; border: 1px solid var(--line); border-radius: 8px; }
+  #toast { position: fixed; inset: auto 0 0 0; background: var(--card); border-top: 1px solid var(--line); padding: 1rem clamp(1rem, 4vw, 3rem); }
+  #toast[hidden] { display: none; }
+  #status { max-width: 80rem; margin: 0 auto; }
+  #fallback { display: none; width: 100%; max-width: 80rem; margin: 0.5rem auto 0; font: inherit; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--focus); }
+</style>
+</head>
+<body>
+<header>
+  <h1>{{product_name}}：選一個畫面方向</h1>
+  <p>第 {{round_number}} 輪（{{round_mode}}）。每張卡片都是「{{screen_name}}」這個畫面，放同樣的內容，只換成不同的方向：{{screen_content}}。第一張是這次擲骰抽到的方向，其他是值得比較的選擇。</p>
+  <p>看完後按下想要的那張的「選這張」，把複製的文字貼回對話；都不喜歡可以按下面的按鈕重擲。想調整的話，先在框裡寫下再按按鈕。</p>
+  <div class="controls">
+    <input id="steer" type="text" placeholder="想調整什麼？例如：要更像夜市、字再圓一點（可留空）" aria-label="想調整什麼">
+    <button type="button" class="secondary" data-reply="保守一點">保守一點</button>
+    <button type="button" class="secondary" data-reply="重擲">重擲</button>
+    <button type="button" class="secondary" data-reply="大膽一點">大膽一點</button>
+  </div>
+</header>
+<main>
+<!-- 重複開始：每張卡片一組 -->
+  <article data-kind="{{card_kind}}">
+    <div class="kind">第 {{card_number}} 張 · <strong>{{card_kind}}</strong></div>
+    <h2>{{card_name}}</h2>
+    <div class="demo" style="--w: {{screen_width}}; --h: {{screen_height}}">
+      <iframe title="第 {{card_number}} 張的示範畫面：{{card_name}}" width="{{screen_width}}" height="{{screen_height}}" srcdoc="{{demo_srcdoc}}"></iframe>
+    </div>
+    <a class="open" href="{{demo_href}}" target="_blank" rel="noopener">在新分頁開啟這個畫面</a>
+    <div class="swatches" aria-label="主要顏色">
+<!-- 重複開始：每個色票一個 -->
+      <span class="swatch" style="background: {{swatch_color}}" title="{{swatch_color}}"></span>
+<!-- 重複結束 -->
+    </div>
+    <dl>
+      <div><dt>感覺像</dt><dd>{{card_metaphor}}</dd></div>
+      <div><dt>打開第一眼</dt><dd>{{card_first_view}}</dd></div>
+      <div><dt>為什麼適合</dt><dd>{{card_why}}</dd></div>
+      <div><dt>要注意的地方</dt><dd>{{card_risk}}</dd></div>
+    </dl>
+    <button type="button" data-reply="選 {{card_number}}（{{card_name}}）">選這張</button>
+  </article>
+<!-- 重複結束 -->
+</main>
+<div id="toast" hidden>
+  <p id="status" role="status"></p>
+  <textarea id="fallback" rows="2" aria-label="要貼回對話的文字"></textarea>
+</div>
+<script>
+  function fitDemos() {
+    document.querySelectorAll('.demo').forEach((box) => {
+      const width = Number(box.style.getPropertyValue('--w'));
+      box.style.setProperty('--s', String(Math.min(1, box.clientWidth / width)));
+    });
+  }
+  fitDemos();
+  window.addEventListener('resize', fitDemos);
+  const toast = document.getElementById('toast');
+  const status = document.getElementById('status');
+  const fallback = document.getElementById('fallback');
+  function replyText(base) {
+    const steer = document.getElementById('steer').value.trim();
+    if (!steer) return base;
+    return base.startsWith('選') ? `${base}，調整：${steer}` : `${base}：${steer}`;
+  }
+  function showFallback(text) {
+    fallback.value = text;
+    fallback.style.display = 'block';
+    fallback.focus();
+    fallback.select();
+    status.textContent = '沒辦法自動複製，請按 Ctrl+C（Mac 按 ⌘C）複製下面的文字，再貼回對話。';
+  }
+  async function copy(text) {
+    toast.hidden = false;
+    try {
+      await navigator.clipboard.writeText(text);
+      fallback.style.display = 'none';
+      status.textContent = `已複製「${text}」，請貼回對話。`;
+    } catch (error) {
+      showFallback(text);
+    }
+  }
+  document.querySelectorAll('button[data-reply]').forEach((button) => {
+    button.addEventListener('click', () => copy(replyText(button.dataset.reply)));
+  });
+</script>
+</body>
+</html>

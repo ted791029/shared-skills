@@ -12,6 +12,7 @@
 - 移除 impeccable 執行檔、偵測器、hook、subagent、即時預覽與設計稿生圖等工具依賴。截圖、渲染後檢查與動態影格擷取改以重新撰寫的 `scripts/畫面擷取.py`（Playwright）實作，由執行本 skill 的 agent 自己檢視截圖。
 - `SKILL.md` 的流程、`templates/` 的樣板與 `scripts/` 下的腳本為重新撰寫。
 - 未取用 impeccable 的 critique、new-work-comp、visualize、component-review、region-map、live 等文件。
+- `rules/視覺方向規範.md` 的七個候選、擲骰與使用者選定方向的概念改寫自 impeccable 的 `skill/reference/new-work-world.md`；impeccable 以編譯後的 `concept-seed` 與 `serve-question` 指令及線上風格目錄實作擲骰與選擇頁，本 skill 未取用這些程式與目錄，`scripts/方向擲骰.py`、`scripts/方向選擇頁.py`、`templates/方向候選.json` 與 `templates/方向選擇頁.html` 為重新撰寫，挑戰者只從本次推導的候選中抽出。
 
 ## 第三方內容
 
