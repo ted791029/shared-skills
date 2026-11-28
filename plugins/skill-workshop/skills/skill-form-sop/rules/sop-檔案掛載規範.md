@@ -109,3 +109,59 @@ templates/需求規格書.example.md    H1：# 會員登入 需求規格書
 2. DELEGATE 使用 requirement-clarify plugin 的 clarify skill 釐清客製化需求，無法使用時不得自行代替，停止並請使用者安裝 requirement-clarify。
 3. DELEGATE 使用 ui-design skill（可由 ui-studio plugin 提供，或為與本 skill 資料夾同層的 `ui-design` 資料夾）撰寫原型，兩者都沒有時不得自行代替，停止並請使用者安裝 ui-studio plugin，agent 不支援 plugin 時改為把 `ui-design` 資料夾複製到同層。
 ```
+
+## Rule 5 -- 基準與宣告它的 RuleFile 掛在同一個 Step
+
+**強度：MUST**
+
+`rules/baselines/` 底下的基準檔必須與宣告它的 RuleFile 掛在同一個 Step，寫在該 RuleFile 之後並以「與」連接；該 RuleFile 被多個 Step 掛載時，每個會用到基準的 Step 都要掛載。不得只靠 RuleFile 內的連結，也不得把基準掛在沒有掛載該 RuleFile 的 Step。基準的連結文字使用其 H1 標題，沒有 H1 時使用檔名。以下 Example 皆對照這些掛載對象：
+
+```text
+rules/需求規格撰寫規範.md      H1：# 需求規格撰寫規範（Rule 2 宣告用語表為基準）
+rules/baselines/用語表.md      H1：# 用語表
+```
+
+### Good Example
+
+這個範例把用語表與宣告它的 RuleFile 掛在同一個 Step，基準寫在 RuleFile 之後。
+
+```markdown
+1. WRITE 依 [需求規格撰寫規範](rules/需求規格撰寫規範.md) 與 [用語表](rules/baselines/用語表.md) 撰寫需求規格書。
+```
+
+### Bad Example
+
+這個範例的第 1 句沒有掛載用語表，agent 依 SOP 只讀 RuleFile，可能不打開用語表就憑印象選用語；第 2 句把用語表掛在沒有掛載 RuleFile 的 Step，agent 讀到資料卻不知道要依哪條 Rule 對照。
+
+```markdown
+1. WRITE 依 [需求規格撰寫規範](rules/需求規格撰寫規範.md) 撰寫需求規格書。
+2. THINK 依 [用語表](rules/baselines/用語表.md) 檢查需求規格書的用語。
+```
+
+## Rule 6 -- 掛載資料夾時必須寫出選讀條件
+
+**強度：MUST**
+
+基準是一個條目一個檔案的資料夾時，Step 掛載該資料夾，路徑以 `/` 結尾，連結文字使用資料夾名稱，並在連結之後以「中 <選讀條件> 的檔案」寫出這次要讀哪些檔案；不得逐一列出資料夾內的檔案，也不得省略選讀條件。以下 Example 皆對照這些掛載對象：
+
+```text
+rules/需求規格撰寫規範.md           H1：# 需求規格撰寫規範（Rule 4 宣告需求句型為基準）
+rules/baselines/需求句型/           索引.md、事件驅動.md、狀態驅動.md、非預期行為.md
+```
+
+### Good Example
+
+這個範例掛載資料夾並寫出選讀條件。
+
+```markdown
+1. WRITE 依 [需求規格撰寫規範](rules/需求規格撰寫規範.md) 與 [需求句型](rules/baselines/需求句型/) 中本次需求類型對應的檔案撰寫每一條需求。
+```
+
+### Bad Example
+
+這個範例的第 1 句逐一列出資料夾內的檔案，新增句型時要回頭修改 Step，agent 也會以為每次都要全部讀完；第 2 句沒有選讀條件，agent 無法判斷要讀哪幾個檔案。
+
+```markdown
+1. WRITE 依 [需求規格撰寫規範](rules/需求規格撰寫規範.md) 與 [事件驅動.md](rules/baselines/需求句型/事件驅動.md) 與 [狀態驅動.md](rules/baselines/需求句型/狀態驅動.md) 與 [非預期行為.md](rules/baselines/需求句型/非預期行為.md) 撰寫每一條需求。
+2. WRITE 依 [需求規格撰寫規範](rules/需求規格撰寫規範.md) 與 [需求句型](rules/baselines/需求句型/) 撰寫每一條需求。
+```

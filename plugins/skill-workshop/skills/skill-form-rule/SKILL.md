@@ -1,6 +1,6 @@
 ---
 name: skill-form-rule
-description: 撰寫、新增或修改任何 skill 的 `rules/` 底下時，必須使用此 skill；即使同時在使用其他 skill也適用。
+description: 撰寫、新增或修改任何 skill 的 `rules/` 底下的 RuleFile 時，必須使用此 skill；即使同時在使用其他 skill 也適用。`rules/baselines/` 底下的基準檔交由 skill-form-baseline。
 ---
 
 ## SOP

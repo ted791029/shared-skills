@@ -2,7 +2,7 @@
 # requires-python = ">=3.10"
 # dependencies = []
 # ///
-"""解析 skills 目錄下每個 SKILL.md 的 SOP 掛載連結，列出各 Step 的掛載、跨 skill 呼叫、失效連結與孤兒檔案。"""
+"""解析 skills 目錄下每個 SKILL.md 的 SOP 掛載連結，列出各 Step 的掛載、跨 skill 呼叫、失效連結與孤兒檔案；Step 掛載資料夾時，資料夾底下的檔案都算已掛載。"""
 
 import argparse
 import json
@@ -24,6 +24,11 @@ def classify(target: Path, skill_dir: Path, skills_dir: Path) -> str:
     if target.is_relative_to(skills_dir):
         return "cross_skill"
     return "external"
+
+
+def is_mounted(path: Path, mounted: set[Path]) -> bool:
+    """檔案本身被掛載，或位於被掛載的資料夾底下，都算已掛載。"""
+    return path in mounted or any(parent in mounted for parent in path.parents)
 
 
 def analyze_skill(skill_dir: Path, skills_dir: Path) -> dict:
@@ -57,7 +62,7 @@ def analyze_skill(skill_dir: Path, skills_dir: Path) -> dict:
         path.relative_to(skill_dir).as_posix()
         for part in PART_DIRS
         for path in sorted((skill_dir / part).rglob("*"))
-        if path.is_file() and path.resolve() not in mounted and "__pycache__" not in path.parts
+        if path.is_file() and not is_mounted(path.resolve(), mounted) and "__pycache__" not in path.parts
     ]
     return {
         "skill": skill_dir.name,
