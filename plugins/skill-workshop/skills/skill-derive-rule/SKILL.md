@@ -19,6 +19,6 @@ description: 給定一個已寫好 SOP 的 skill，針對其中某個步驟展�
 
 1. WRITE 依 [SOP 檔案掛載規範](../skill-form-sop/rules/sop-檔案掛載規範.md) 在指定 SOP Step 加入對應 RuleFile 的連結引用。
 
-### Phase 4 --- 抽出基準
+### Phase 4 --- 建議基準
 
-1. DELEGATE 有 Rule 的對照資料是型錄時依 [skill-derive-baseline](../skill-derive-baseline/SKILL.md) 為該 Rule 抽出基準。
+1. WRITE 有 Rule 的對照資料是型錄時在回覆中建議以 skill-derive-baseline 抽出基準。

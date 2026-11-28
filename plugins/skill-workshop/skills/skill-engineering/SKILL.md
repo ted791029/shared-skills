@@ -1,6 +1,6 @@
 ---
 name: skill-engineering
-description: 建立新 skill 或優化、修正既有 skill（包含使用者對某個 skill 的產出不滿意）時使用此 skill。先以終為始釐清預期，優化時做根因分析並經使用者確認，再以 skill-form-sop 推導主幹並編排 skill-derive-* 衍生 rules、templates、scripts；每個 Step 由閘門腳本逐步給出並記錄，跳過須經使用者同意，結束時回報執行狀態表。以 Artifact 範例出發建立 skill 時先交由 artifact-to-skill-engineering 抽出樣板。
+description: 建立新 skill 或優化、修正既有 skill（包含使用者對某個 skill 的產出不滿意，或 skill 與它依據的來源不一致）時使用此 skill。以 Artifact 範例出發建立 skill 交由 artifact-to-skill-engineering，只為既有 skill 的指定 Step 或 Rule 抽出腳本、規則、基準或樣板交由對應的 skill-derive-*。
 ---
 
 ## SOP
@@ -8,7 +8,7 @@ description: 建立新 skill 或優化、修正既有 skill（包含使用者對
 ### Phase 1 --- 釐清預期
 
 1. DELEGATE 依 [sop_gate.py](scripts/sop_gate.py) 與 [SOP 閘門規範](rules/sop-閘門規範.md) 與 [腳本執行規範](rules/script-執行規範.md) 建立執行紀錄。
-2. READ 讀取使用者需求與目標 skill。
+2. READ 讀取使用者需求、目標 skill 與它依據的外部來源。
 3. THINK 判斷為新建或優化。
 4. THINK 依 [預期定義規範](rules/預期定義規範.md) 以終為始寫出使用者預期的產出。
 5. ASK 請使用者確認模式與預期。
@@ -35,7 +35,8 @@ description: 建立新 skill 或優化、修正既有 skill（包含使用者對
 4. WRITE 依 [SOP 檔案掛載規範](../skill-form-sop/rules/sop-檔案掛載規範.md) 刪除所有 skill 中指向已刪除部件的掛載連結。
 5. DELEGATE 依 [skill-derive-script](../skill-derive-script/SKILL.md) 為編排提案中指派的 Step 抽出腳本。
 6. DELEGATE 依 [skill-derive-rule](../skill-derive-rule/SKILL.md) 為編排提案中指派的 Step 展開規則。
-7. DELEGATE 依 [skill-derive-template](../skill-derive-template/SKILL.md) 為編排提案中指派的 Step 抽出樣板。
+7. DELEGATE 依 [skill-derive-baseline](../skill-derive-baseline/SKILL.md) 為編排提案中指派的資料抽出基準。
+8. DELEGATE 依 [skill-derive-template](../skill-derive-template/SKILL.md) 為編排提案中指派的 Step 抽出樣板。
 
 ### Phase 5 --- 驗證
 

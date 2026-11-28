@@ -7,7 +7,7 @@ description: 給定一個已寫好 RuleFile 的 skill，要把其中某條 Rule 
 
 ### Phase 1 --- 判斷需求
 
-1. READ 讀取目標 skill 的 SKILL.md、RuleFile 與使用者指定的 Rule。
+1. READ 讀取目標 skill 的 SKILL.md、`rules/`、`templates/`、`scripts/` 與使用者指定的 Rule。
 2. ASK 未指定 Rule 或範圍不明時詢問使用者。
 3. THINK 依 [基準邊界判斷](rules/基準邊界判斷.md) 判斷指定 Rule 中應抽成基準的對照資料與其來源。
 4. ASK 對照資料不在 Rule 與使用者提供的材料中時請使用者提供。
@@ -19,4 +19,6 @@ description: 給定一個已寫好 RuleFile 的 skill，要把其中某條 Rule 
 ### Phase 3 --- 連動調整
 
 1. WRITE 依 [skill-form-rule](../skill-form-rule/SKILL.md) 與 [基準連動調整](rules/基準連動調整.md) 改寫指定 Rule，移除已抽出的資料並宣告基準。
-2. WRITE 依 [SOP 檔案掛載規範](../skill-form-sop/rules/sop-檔案掛載規範.md) 在掛載該 RuleFile 的 Step 加入基準的連結引用。
+2. WRITE 依 [skill-form-template](../skill-form-template/SKILL.md) 與 [基準連動調整](rules/基準連動調整.md) 把持有同一份資料的樣板改為引用基準。
+3. WRITE 依 [skill-form-script](../skill-form-script/SKILL.md) 與 [基準連動調整](rules/基準連動調整.md) 把持有同一份資料的腳本改為讀取基準。
+4. WRITE 依 [SOP 檔案掛載規範](../skill-form-sop/rules/sop-檔案掛載規範.md) 在使用基準的 Step 加入基準的連結引用。

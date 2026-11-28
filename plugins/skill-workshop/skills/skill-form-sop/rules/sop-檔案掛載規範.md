@@ -110,23 +110,26 @@ templates/需求規格書.example.md    H1：# 會員登入 需求規格書
 3. DELEGATE 使用 ui-design skill（可由 ui-studio plugin 提供，或為與本 skill 資料夾同層的 `ui-design` 資料夾）撰寫原型，兩者都沒有時不得自行代替，停止並請使用者安裝 ui-studio plugin，agent 不支援 plugin 時改為把 `ui-design` 資料夾複製到同層。
 ```
 
-## Rule 5 -- 基準與宣告它的 RuleFile 掛在同一個 Step
+## Rule 5 -- 基準與使用它的 RuleFile 或樣板掛在同一個 Step
 
 **強度：MUST**
 
-`rules/baselines/` 底下的基準檔必須與宣告它的 RuleFile 掛在同一個 Step，寫在該 RuleFile 之後並以「與」連接；該 RuleFile 被多個 Step 掛載時，每個會用到基準的 Step 都要掛載。不得只靠 RuleFile 內的連結，也不得把基準掛在沒有掛載該 RuleFile 的 Step。基準的連結文字使用其 H1 標題，沒有 H1 時使用檔名。以下 Example 皆對照這些掛載對象：
+`rules/baselines/` 底下的基準檔必須與宣告它的 RuleFile，或以連結引用它的樣板，掛在同一個 Step，寫在該 RuleFile 或樣板之後並以「與」連接；該 RuleFile 或樣板被多個 Step 掛載時，每個會用到基準的 Step 都要掛載。不得只靠 RuleFile 或樣板內的連結，也不得把基準掛在沒有掛載這些檔案的 Step。基準的連結文字使用其 H1 標題，沒有 H1 時使用檔名。以下 Example 皆對照這些掛載對象：
 
 ```text
-rules/需求規格撰寫規範.md      H1：# 需求規格撰寫規範（Rule 2 宣告用語表為基準）
-rules/baselines/用語表.md      H1：# 用語表
+rules/需求規格撰寫規範.md          H1：# 需求規格撰寫規範（Rule 2 宣告用語表為基準）
+templates/用語附錄.md              骨架的重複區塊註解連結用語表
+templates/用語附錄.example.md      範例
+rules/baselines/用語表.md          H1：# 用語表
 ```
 
 ### Good Example
 
-這個範例把用語表與宣告它的 RuleFile 掛在同一個 Step，基準寫在 RuleFile 之後。
+這個範例把用語表與宣告它的 RuleFile 掛在同一個 Step，也與引用它的樣板掛在同一個 Step，基準都寫在 RuleFile 或樣板之後。
 
 ```markdown
 1. WRITE 依 [需求規格撰寫規範](rules/需求規格撰寫規範.md) 與 [用語表](rules/baselines/用語表.md) 撰寫需求規格書。
+2. WRITE 依 [用語附錄.md](templates/用語附錄.md) 與 [用語附錄.example.md](templates/用語附錄.example.md) 與 [用語表](rules/baselines/用語表.md) 撰寫需求規格書的用語附錄。
 ```
 
 ### Bad Example
